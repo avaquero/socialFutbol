@@ -11,7 +11,7 @@ class Perfil(models.Model):
     
 class Amic(models.Model):
     usu1 = models.ForeignKey(Perfil)
-    usu2 = models.ForeignKey(User)
+    usu2 = models.ForeignKey(Perfil)
     
 class Publicacio(models.Model):
     usuari = models.ForeignKey(Perfil)
