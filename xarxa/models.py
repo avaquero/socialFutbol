@@ -10,8 +10,8 @@ class Perfil(models.Model):
     equip = models.CharField(max_length=30)
     
 class Amic(models.Model):
-    usu1 = models.ForeignKey(Perfil)
-    usu2 = models.ForeignKey(Perfil)
+    usu1 = models.ForeignKey(Perfil, related_name='usuari1')
+    usu2 = models.ForeignKey(Perfil, related_name='usuari2')
     
 class Publicacio(models.Model):
     usuari = models.ForeignKey(Perfil)
