@@ -8,13 +8,13 @@ from django.http.response import HttpResponseRedirect
 #from django.contrib.auth.decorators import login_required
 
 # Create your views here.
-def login(request):
-    #Si el metode es POST m'ho en enviat a mi mateix vol dir que ja tinc dades per processar
+def entrar(request):
+    #Si el metode es POST es que tenim dades per procesar
     if request.method == 'POST': 
         form = formulariLogin(request.POST)
-        #Si les dades entrades són correctes (compleixen el tipus de camp...) Procesem i redirigim a portada
+        #Si les dades entrades són correctes (haurem d'accedir al perfil)
         if form.is_valid():
-            #Emmagatzemem les dades que es troben al diccioanri form.cleaned_data a les variables corresponents
+            #Emmagatzemem les dades que ens envien
             username = form.cleaned_data['usuari']
             password = form.cleaned_data['contrasenya']
             #Autenticar usuaris
@@ -50,13 +50,11 @@ def login(request):
     form.fields['usuari'].widget.attrs['placeholder'] = 'Usuari'
     form.fields['contrasenya'].widget.attrs['placeholder'] = 'Contrasenya'
     
-    
-    
     return render(request, 'login.html', {
         'form': form,
     })
-#La funció logout fa login
-def logout(request):
+    
+def sortir(request):
     logout(request)
     messages.success(request, 'Logout correcte, a reveure')
     return HttpResponseRedirect('/')
