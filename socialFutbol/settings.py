@@ -37,6 +37,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'xarxa',
+    'perfils',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -91,3 +92,6 @@ TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'TEMPLATES'),]
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "fitxers_estatics"),
 )
+
+LOGIN_URL = '/perfils/login'
+LOGOUT_URL = 'perfils/logout'
