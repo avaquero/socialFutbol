@@ -8,6 +8,7 @@ class Perfil(models.Model):
     cognoms = models.CharField(max_length=30)
     dataNaix = models.DateField()
     equip = models.CharField(max_length=30)
+    imatgePerfil = models.FileField(upload_to="imatges", blank=True)
     
     def __unicode__(self):
         return self.usuari.username

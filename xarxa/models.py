@@ -6,7 +6,7 @@ class Publicacio(models.Model):
     usuari = models.ForeignKey(Perfil)
     privat = models.BooleanField()
     dataHora = models.DateTimeField()
-    urlImatge = models.TextField()
+    imatge = models.FileField(upload_to="imatges", blank=True)
     text = models.TextField()
     
 class Comentari(models.Model):

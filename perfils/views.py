@@ -26,7 +26,6 @@ def entrar(request):
                 if user.is_active:
                     #Fem login
                     login(request, user)
-                    messages.success(request, 'Login correcte')
                     #Si has conseguit fer login aniras a la pagina del teu perfil
                     tu =reverse('perfil:tu')
                     next = request.GET.get('next', tu)
@@ -36,11 +35,11 @@ def entrar(request):
                     messages.error(request, 'Compte desactivada, contacti amb l\'administrador')
             # Return a 'disabled account' error message
             else:
-                messages.error(request, 'Ep! Hi ha hagut un error!')
+                messages.error(request, 'Hi ha algun error')
         # Return an 'invalid login' error message.
             
         else:
-            messages.error(request, 'Ep! Hi ha hagut un error!')
+            messages.error(request, 'Hi ha algun error')
         #Si no es pots es GET i vol dir que no tenim dades a processar
     else:
         form = formulariLogin() 
@@ -59,5 +58,4 @@ def entrar(request):
     
 def sortir(request):
     logout(request)
-    messages.success(request, 'Logout correcte, a reveure')
     return HttpResponseRedirect('/')

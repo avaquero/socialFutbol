@@ -1,12 +1,18 @@
 {% extends "base.html" %}
+{% load staticfiles %}
 
-{% block  title %} Social-Football {% endblock %}
+{% block  title %} Tu - Social-Football {% endblock %}
 
 {% block content %}
-<div class="starter-template">
-	<h1>HOLA!</h1>
-	<p class="lead">
-		Aquest és el teu perfil
-	</p>
+
+<div class="container">
+	<br/>
+	{% if perfil.imatgePerfil %}
+	<img class="img-responsive" src="{{ MEDIA_URL }}{{ perfil.imatgePerfil }}" width="200px" height="200px"/>
+	{% else %}
+	<img class="img-responsive" src="{%static "imatges/default.jpg" %}" width="200px" height="200px"/>
+	{% endif %}
 </div>
+
+
 {% endblock %}
