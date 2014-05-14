@@ -5,6 +5,7 @@ from perfils.forms import formulariLogin, formulariUsuari
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.http.response import HttpResponseRedirect
+from django.core.urlresolvers import reverse
 #from django.contrib.auth.decorators import login_required
 
 # Create your views here.
@@ -26,7 +27,9 @@ def entrar(request):
                     #Fem login
                     login(request, user)
                     messages.success(request, 'Login correcte')
-                    next = request.GET.get('next','/')
+                    #Si has conseguit fer login aniras a la pagina del teu perfil
+                    tu =reverse('perfil:tu')
+                    next = request.GET.get('next', tu)
                     return HttpResponseRedirect(next)
                     # Redirect to a success page.
                 else:

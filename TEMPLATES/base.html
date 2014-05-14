@@ -47,7 +47,10 @@
 					</ul>
 					<ul class="nav navbar-nav navbar-right">
 						<li>
-							<a href="{% url 'perfils:logout' %}"><span class="glyphicon glyphicon-log-out"></span> Surt</a>
+							<a href="{% url 'perfil:tu' %}">{{user.username}}</a>
+						</li>
+						<li>
+							<a href="{% url 'accedir:logout' %}"><span class="glyphicon glyphicon-log-out"></span> Surt</a>
 						</li>
 					</ul>
 				</div><!--/.nav-collapse -->
@@ -79,7 +82,7 @@
 					</ul>
 					<ul class="nav navbar-nav navbar-right">
 						<li>
-							<a href="{% url 'perfils:login' %}"><span class="glyphicon glyphicon-log-in"></span> Entrar</a>
+							<a href="{% url 'accedir:login' %}"><span class="glyphicon glyphicon-log-in"></span> Entrar</a>
 						</li>
 					</ul>
 				</div><!--/.nav-collapse -->
