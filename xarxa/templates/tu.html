@@ -8,11 +8,33 @@
 <div class="container">
 	<br/>
 	{% if perfil.imatgePerfil %}
-	<img class="img-responsive" src="{{ MEDIA_URL }}{{ perfil.imatgePerfil }}" width="200px" height="200px"/>
+	<img class="img-responsive" src="{{ perfil.imatgePerfil.url }}" width="200px" height="200px"/>
 	{% else %}
 	<img class="img-responsive" src="{%static "imatges/default.jpg" %}" width="200px" height="200px"/>
 	{% endif %}
-</div>
+	<br/>
+	<div class="panel panel-primary">
+		<!-- Default panel contents -->
+		<div class="panel-heading">
+			Dades personals
+		</div>
+		<div class="panel-body">
+			<p>
+			<p>
+				{{ perfil.nom }}
+			</p>
+			<p>
+				{{ perfil.cognoms }}
+			</p>
+			<p>
+				{{ perfil.dataNaix }}
+			</p>
+			<p>
+				{{ perfil.equip }}
+			</p>
 
+		</div>
 
-{% endblock %}
+	</div>
+
+	{% endblock %}

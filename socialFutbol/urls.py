@@ -1,4 +1,6 @@
 from django.conf.urls import patterns, include, url
+from django.conf import settings
+from django.conf.urls.static import static
 
 from django.contrib import admin
 admin.autodiscover()
@@ -13,4 +15,6 @@ urlpatterns = patterns('',
     url(r'^accedir/', include('perfils.urls', namespace='accedir')),
     #URL per mostrar el perfil
     url(r'^perfil/', include('xarxa.urls', namespace='perfil')),
+    
 )
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
