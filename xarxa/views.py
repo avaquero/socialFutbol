@@ -15,10 +15,6 @@ def generarPerfil(request):
     publicacions = Publicacio.objects.filter(usuari = perfil)
     peticions = Amic.objects.filter(usuariAmic = perfil, acceptat = 0)
     
-    #mevaPeticio = Amic.objects.get(usuari_id)
-    
-    #eticioDe = Perfil.objects.filter(usuari = mevaPeticio)
-    
     for peticio in peticions:
         print peticio.usuari_id
         user_act = Perfil.objects.get(usuari = peticio.usuari_id)
