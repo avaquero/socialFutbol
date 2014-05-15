@@ -7,8 +7,8 @@
 
 <div class="row">
 	<br/>
-	<div class="col-xs-6 col-md-4">
-		<div class="panel panel-primary">
+	<div class="col-md-3">
+		<div class="panel panel-info">
 			<!-- Default panel contents -->
 			<div class="panel-heading">
 				Dades personals
@@ -36,6 +36,40 @@
 			</div>
 
 		</div>
+
+	</div>
+	<div class="col-md-6">
+		<div class="panel panel-info">
+			<!-- Default panel contents -->
+			<div class="panel-heading">
+				Publicacions
+			</div>
+			<div class="panel-body">
+				{% for publicacio in publicacions %}
+				<div class="col-xs-12 col-sm-6 col-md-8">
+					<div class="panel panel-default">
+						<!-- Default panel contents -->
+						<div class="panel-heading">
+							{{ publicacio.dataHora }}
+						</div>
+						<div class="panel-body">
+							{% if publicacio.imatge %}
+							<p><img class="img-responsive" src="{{ publicacio.imatge.url }}" width="200px" height="200px"/>
+							</p>
+							{% endif %}
+							<p>
+								{{ publicacio.text }}
+							</p>
+						</div>
+
+					</div>
+				</div>
+				{% endfor %}
+			</div>
+
+		</div>
+	</div>
+	<div class="col-md-3">
 		{% if peticions %}
 		<div class="panel panel-info">
 			<!-- Default panel contents -->
@@ -56,36 +90,20 @@
 			</div>
 		</div>
 		{% endif %}
-	</div>
-	<div class="col-xs-12 col-sm-6 col-md-8">
-		<div class="panel panel-primary">
-			<!-- Default panel contents -->
-			<div class="panel-heading">
-				Publicacions
-			</div>
-			<div class="panel-body">
-				{% for publicacio in publicacions %}
-				<div class="col-xs-12 col-sm-6 col-md-8">
-					<div class="panel panel-default">
-						<!-- Default panel contents -->
-						<div class="panel-heading">
-							{{ publicacio.dataHora }}
-						</div>
-						<div class="panel-body">
-							{% if publicacio.imatge %}
-							<p><img class="img-responsive" src="{{ publicacio.imatge.url }}" width="200px" height="200px"/></p>
-							{% endif %}
-							<p>{{ publicacio.text }}</p>
-						</div>
-
-					</div>
+		<div class="panel panel-info">
+				<!-- Default panel contents -->
+				<div class="panel-heading">
+					Amics
 				</div>
-				{% endfor %}
-			</div>
+				<div class="panel-body">
 
+					<p>
+						Aqui van els meus amics
+					</p>
+				</div>
+			</div>
 		</div>
 	</div>
-
 </div>
 
 {% endblock %}
