@@ -3,7 +3,7 @@ from xarxa import views
 
 urlpatterns = patterns('',
     url(r'^tu$', views.generarPerfil, name='tu'),
-    url(r'^perfilAgeno/(?P<idPerfil>\d+)$', views.veurePerfil, name='perfilAgeno'),
+    url(r'^perfilAjeno/(?P<idPerfil>\d+)$', views.veurePerfil, name='perfilAjeno'),
     url(r'^nouAmic/(?P<idPerfil>\d+)$', views.afegirAmic, name='nouAmic'),
     #url(r'^logout$', views.sortir, name='logout'),
 )

@@ -23,6 +23,7 @@ def generarPerfil(request):
         nom.append(user_act.nom + " " + user_act.cognoms)
         idPeticio.append(peticio.id)
         idPeticio.reverse() #Ordenar la llista al reves per despres fer el pop al template i treurels ordenats
+
     
     context = {'perfil':perfil, 'publicacions':publicacions, 'nom':nom, 'idPeticio':idPeticio, 'peticions':peticions }
     return render(request, 'tu.html', context)
