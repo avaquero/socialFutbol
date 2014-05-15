@@ -34,32 +34,9 @@
 			</p>
 
 		</div>
-
-	</div>
-	
-	{% if peticions %}
-		
-			<div class="panel panel-warning">
-		<!-- Default panel contents -->
-		<div class="panel-heading">
-			Peticions d'amistat
-		</div>
-		<div class="panel-body">
-			<table>
-				{% for peticio in peticions%}
-					<tr>
-						<td>Peticio de: {{ peticio.usuari_id }}</td>
-						<td><a class="btn btn-success">Acceptar</a> <a class="btn btn-danger">Denegar</a></td>
-					</tr>
-				{% endfor %}
-			</table>
-
-		</div>
-
-	</div>
-		
+	{% if user.is_authenticated %}
+	<a href="{% url 'perfil:nouAmic' perfil.id %}" class="btn btn-success">Afegir com amic</a>
 	{% endif %}
+	</div>
 
-</div>
-
-{% endblock %}
+	{% endblock %}

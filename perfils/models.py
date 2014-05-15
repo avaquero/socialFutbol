@@ -9,10 +9,13 @@ class Perfil(models.Model):
     dataNaix = models.DateField()
     equip = models.CharField(max_length=30)
     imatgePerfil = models.FileField(upload_to="imatges", blank=True)
+    #nouAmic = models.ManyToManyField("self", blank=True)
     
     def __unicode__(self):
         return self.usuari.username
     
 class Amic(models.Model):
-    usu1 = models.ForeignKey(Perfil, related_name='usuari1')
-    usu2 = models.ForeignKey(Perfil, related_name='usuari2')
+    usuari = models.ForeignKey(Perfil, related_name='usuariJo')
+    usuariAmic = models.ForeignKey(Perfil, related_name='usuariAmic')
+    acceptat = models.BooleanField()
+    dataAcceptacio = models.DateField(blank=True)
