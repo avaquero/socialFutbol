@@ -5,38 +5,56 @@
 
 {% block content %}
 
-<div class="container">
+<div class="row">
 	<br/>
-	{% if perfil.imatgePerfil %}
-	<img class="img-responsive" src="{{ perfil.imatgePerfil.url }}" width="200px" height="200px"/>
-	{% else %}
-	<img class="img-responsive" src="{%static "imatges/default.jpg" %}" width="200px" height="200px"/>
-	{% endif %}
-	<br/>
-	<div class="panel panel-primary">
-		<!-- Default panel contents -->
-		<div class="panel-heading">
-			Dades personals
-		</div>
-		<div class="panel-body">
-			<p>
-			<p>
-				<b>Nom:</b> {{ perfil.nom }}
-			</p>
-			<p>
-				<b>Cognoms:</b> {{ perfil.cognoms }}
-			</p>
-			<p>
-				<b>Data naixement:</b> {{ perfil.dataNaix }}
-			</p>
-			<p>
-				<b>Equip actual:</b> {{ perfil.equip }}
-			</p>
+	<div class="col-xs-6 col-md-4">
+		<div class="panel panel-primary">
+			<!-- Default panel contents -->
+			<div class="panel-heading">
+				Dades personals
+			</div>
+			<div class="panel-body">
+				{% if perfil.imatgePerfil %}
+				<img class="img-responsive" src="{{ perfil.imatgePerfil.url }}" width="200px" height="200px"/>
+				{% else %}
+				<img class="img-responsive" src="{%static "imatges/default.jpg" %}" width="200px" height="200px"/>
+				{% endif %}
+				<p>
+				<p>
+					<b>Nom:</b> {{ perfil.nom }}
+				</p>
+				<p>
+					<b>Cognoms:</b> {{ perfil.cognoms }}
+				</p>
+				<p>
+					<b>Data naixement:</b> {{ perfil.dataNaix }}
+				</p>
+				<p>
+					<b>Equip actual:</b> {{ perfil.equip }}
+				</p>
+
+				{% if user.is_authenticated %}
+				<a href="{% url 'perfil:nouAmic' perfil.id %}" class="btn btn-success">Afegir com amic</a>
+				{% endif %}
+
+			</div>
 
 		</div>
-	{% if user.is_authenticated %}
-	<a href="{% url 'perfil:nouAmic' perfil.id %}" class="btn btn-success">Afegir com amic</a>
-	{% endif %}
+
 	</div>
 
-	{% endblock %}
+	<div class="col-xs-12 col-sm-6 col-md-8">
+		<div class="panel panel-primary">
+			<!-- Default panel contents -->
+			<div class="panel-heading">
+				Publicacions
+			</div>
+			<div class="panel-body">
+
+			</div>
+
+		</div>
+	</div>
+</div>
+
+{% endblock %}

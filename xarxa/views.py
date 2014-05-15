@@ -12,16 +12,19 @@ import datetime
 #GENERAR EL TEU PERFIL
 def generarPerfil(request):
     perfil = request.user.perfil
-    publicacions = Publicacio.objects.filter(usuari = perfil)
+    publicacions = Publicacio.objects.filter(usuari = perfil).order_by('-dataHora')
     peticions = Amic.objects.filter(usuariAmic = perfil, acceptat = 0)
+    nom = []
+    idPeticio = []
     
     for peticio in peticions:
-        print peticio.usuari_id
         user_act = Perfil.objects.get(usuari = peticio.usuari_id)
-        print user_act.nom + " " + user_act.cognoms
         #emmagatzemar en una llista / array
+        nom.append(user_act.nom + " " + user_act.cognoms)
+        idPeticio.append(peticio.id)
+        idPeticio.reverse() #Ordenar la llista al reves per despres fer el pop al template i treurels ordenats
     
-    context = {'perfil':perfil, 'publicacions':publicacions, 'peticions':peticions }
+    context = {'perfil':perfil, 'publicacions':publicacions, 'nom':nom, 'idPeticio':idPeticio, 'peticions':peticions }
     return render(request, 'tu.html', context)
 
 #GENERAR PERFIL D'aLTRES
