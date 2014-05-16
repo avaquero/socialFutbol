@@ -15,11 +15,11 @@
 			</div>
 			<div class="panel-body">
 				{% if perfil.imatgePerfil %}
-				<img class="img-responsive" src="{{ perfil.imatgePerfil.url }}" width="200px" height="200px"/>
+				<img class="img-responsive" alt="Imatge perfil" src="{{ perfil.imatgePerfil.url }}" width="200px" height="200px"/>
 				{% else %}
-				<img class="img-responsive" src="{%static "imatges/default.jpg" %}" width="200px" height="200px"/>
+				<img class="img-responsive" alt="Imatge perfil" src="{%static "imatges/default.jpg" %}" width="200px" height="200px"/>
 				{% endif %}
-				<p>
+				<p></p>
 				<p>
 					<b>Nom:</b> {{ perfil.nom }}
 				</p>

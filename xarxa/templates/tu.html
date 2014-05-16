@@ -11,15 +11,15 @@
 		<div class="panel panel-info">
 			<!-- Default panel contents -->
 			<div class="panel-heading">
-				Dades personals
+				<span class="glyphicon glyphicon-info-sign"></span> Dades personals
 			</div>
 			<div class="panel-body">
 				{% if perfil.imatgePerfil %}
-				<img class="img-responsive" src="{{ perfil.imatgePerfil.url }}" width="200px" height="200px"/>
+				<img class="img-responsive" alt="Imatge perfil" src="{{ perfil.imatgePerfil.url }}" width="200px" height="200px"/>
 				{% else %}
-				<img class="img-responsive" src="{%static "imatges/default.jpg" %}" width="200px" height="200px"/>
+				<img class="img-responsive" alt="Imatge perfil" src="{%static "imatges/default.jpg" %}" width="200px" height="200px"/>
 				{% endif %}
-				<p>
+				<p></p>
 				<p>
 					<b>Nom:</b> {{ perfil.nom }}
 				</p>
@@ -54,7 +54,7 @@
 						</div>
 						<div class="panel-body">
 							{% if publicacio.imatge %}
-							<p><img class="img-responsive" src="{{ publicacio.imatge.url }}" width="200px" height="200px"/>
+							<p><img class="img-responsive" alt="Imatge publicacio" src="{{ publicacio.imatge.url }}" width="200px" height="200px"/>
 							</p>
 							{% endif %}
 							<p>
@@ -81,8 +81,8 @@
 
 					{% for noms in nom %}
 					<tr>
-						<td>Peticio de: {{ noms }} {{ idPeticio.pop }}</td>
-						<td><a class="btn btn-success">Acceptar</a><a class="btn btn-danger">Denegar</a></td>
+						<td>Peticio de: {{ noms }}</td>
+						<td><a href="{% url 'perfil:acceptarAmic' idPeticio.pop %}" class="btn btn-success">Acceptar</a><a class="btn btn-danger">Denegar</a></td>
 					</tr>
 					{% endfor %}
 				</table>
@@ -93,13 +93,18 @@
 		<div class="panel panel-info">
 				<!-- Default panel contents -->
 				<div class="panel-heading">
-					Amics
+					<span class="glyphicon glyphicon-user"></span> Amics
 				</div>
 				<div class="panel-body">
-
+					{% if amigos %}
+						{% for amic in amigos %}
+							<a href="{% url 'perfil:perfilAjeno' ids.pop %}">{{ amic }}</a>
+						{% endfor %}
+					{% else %}
 					<p>
-						Aqui van els meus amics
+						Encara no tens amics
 					</p>
+					{% endif %}
 				</div>
 			</div>
 		</div>
