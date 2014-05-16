@@ -49,7 +49,6 @@ def generarPerfil(request):
 
 #GENERAR PERFIL D'aLTRES
 def veurePerfil(request, idPerfil):
-    jo = request.user.perfil
     perfil = get_object_or_404(Perfil, pk=idPerfil)
     publicacions = Publicacio.objects.filter(usuari = perfil)
 
