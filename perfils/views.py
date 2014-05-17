@@ -1,11 +1,13 @@
 # -*- encoding: utf-8 -*-
 from django.shortcuts import render
 from perfils.models import Perfil
-from perfils.forms import formulariLogin, formulariUsuari
+from perfils.forms import formulariLogin, formulariUsuari, formulariRegistrarse
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.http.response import HttpResponseRedirect
 from django.core.urlresolvers import reverse
+from django.contrib.auth.models import User
+
 #from django.contrib.auth.decorators import login_required
 
 # Create your views here.
@@ -59,3 +61,54 @@ def entrar(request):
 def sortir(request):
     logout(request)
     return HttpResponseRedirect('/')
+
+def registrarse(request):
+    if request.method == 'POST':
+        form = formulariRegistrarse(request.POST, request.FILES)
+        if form.is_valid():
+            usuari = form.cleaned_data['nick']
+            contrasenya = form.cleaned_data['contrasenya']
+            nom = form.cleaned_data['nom']
+            cognoms = form.cleaned_data['cognoms']
+            dataNaix = form.cleaned_data['dataNaix']
+            equip = form.cleaned_data['equip']
+            nouUser = User()
+            nouUser.username = usuari
+            nouUser.password = contrasenya
+            nouUser.save()
+            
+            user = User.objects.get(username = usuari)
+            
+            nouPerfil = Perfil()
+            nouPerfil.usuari = user
+            nouPerfil.nom = nom
+            nouPerfil.cognoms = cognoms
+            nouPerfil.dataNaix = dataNaix
+            nouPerfil.equip = equip
+            nouPerfil.save()
+            
+            messages.success(request, "Molt bé, t'has registrat, ja pots accedir al portal")
+            tu = reverse('home')
+            return HttpResponseRedirect(tu)
+            
+        else:
+            messages.error(request, "Falten dades per emplenar")
+        
+       
+    else:
+        form = formulariRegistrarse()
+    
+    #Afegir la clase de bootstrap als camps
+    camps_bootestrapejar =( 'nick', 'contrasenya', 'nom', 'cognoms', 'dataNaix', 'equip')
+    for c in camps_bootestrapejar:
+        form.fields[c].widget.attrs['class'] = 'form-control'
+    form.fields['nick'].widget.attrs['placeholder'] = 'Nickname'
+    form.fields['contrasenya'].widget.attrs['placeholder'] = 'Contrasenya'
+    form.fields['nom'].widget.attrs['placeholder'] = 'Nom'
+    form.fields['cognoms'].widget.attrs['placeholder'] = 'Cognoms'
+    form.fields['dataNaix'].widget.attrs['placeholder'] = 'Data naixement'
+    form.fields['equip'].widget.attrs['placeholder'] = 'Equip actual'
+    
+    return render(request, 'registrarse.html', {
+        'form': form,
+    })
