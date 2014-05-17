@@ -57,4 +57,14 @@
 	</form>
 </div>
 
+<div id="missatges" class="col-md-12">
+	{% if messages %}
+	{% for message in messages %}
+	<div class="col-md-offset-2 col-md-8">
+		{{ message }}
+	</div>
+	{% endfor %}
+	{% endif %}
+</div>
+
 {% endblock %}

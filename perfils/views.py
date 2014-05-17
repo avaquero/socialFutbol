@@ -35,11 +35,11 @@ def entrar(request):
                     messages.error(request, 'Compte desactivada, contacti amb l\'administrador')
             # Return a 'disabled account' error message
             else:
-                messages.error(request, 'Hi ha algun error')
+                messages.error(request, 'Usuari i/o contrasenya incorrecte')
         # Return an 'invalid login' error message.
             
         else:
-            messages.error(request, 'Hi ha algun error')
+            messages.error(request, 'Escriu usuari i contrasenya per accedir')
         #Si no es pots es GET i vol dir que no tenim dades a processar
     else:
         form = formulariLogin() 
