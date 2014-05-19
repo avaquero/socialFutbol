@@ -30,7 +30,7 @@ def generarPerfil(request):
     else:
         form = FormNovaPublicacio()
     
-    camps_bootstrap = ('text', 'imatge', 'privat')
+    camps_bootstrap = ('text', 'privat')
     for c in camps_bootstrap:
         form.fields[c].widget.attrs['class'] = 'form-control'
     

@@ -1,12 +1,13 @@
 # -*- encoding: utf-8 -*-
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from perfils.models import Perfil
-from perfils.forms import formulariLogin, formulariUsuari, formulariRegistrarse
+from perfils.forms import formulariLogin, formulariModificar, formulariRegistrarse
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.http.response import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 
 #from django.contrib.auth.decorators import login_required
 
@@ -110,3 +111,24 @@ def registrarse(request):
     return render(request, 'registrarse.html', {
         'form': form,
     })
+
+@login_required
+def modificarDadesPerfil(request):
+    perfil = request.user.perfil
+    perfil_modificar = get_object_or_404(Perfil, pk=perfil.id)
+    
+    if request.method == 'POST':
+        form = formulariModificar(request.POST, request.FILES, instance = perfil_modificar)
+        if form.is_valid():
+            form.save()
+            pagina = reverse('perfil:tu')
+            return HttpResponseRedirect(pagina)
+        else:
+            messages.error(request, "Hi ha hagut un error")
+    else:
+        form = formulariModificar(instance = perfil_modificar)
+        
+    camps_bootstrap = ('nom','cognoms', 'dataNaix', 'equip')
+    for c in camps_bootstrap:
+        form.fields[c].widget.attrs['class'] = 'form-control'
+    return render(request, 'modificarDades.html', {'form':form,})

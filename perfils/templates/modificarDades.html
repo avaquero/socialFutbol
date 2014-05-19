@@ -1,7 +1,10 @@
 {% extends "base.html" %}
+{% load staticfiles %}
 
-{% block  title %} Login - Social-Football {% endblock %}
+{% block  title %} Modificar dades - Social-Football {% endblock %}
+
 {% block content %}
+
 <style>
 	body {
 		padding-top: 40px;
@@ -43,37 +46,27 @@
 		border-top-right-radius: 0;
 	}
 </style>
-
+<br/>
 <div class="container">
-	<br/>
 	<div class="panel panel-info">
 		<div class="panel-heading">
-			Siusplau introdueix usuari i contrasenya
+			Modifica les teves dades personals
 		</div>
 		<div class="panel-body">
-			<form action="" method="post" class="form-signin" role="form">
+			<form action="" method="post" class="form-signin" enctype="multipart/form-data" role="form" >
 				{% csrf_token %}
 				{% for field in form.visible_fields %}
 				<div class="form-group">
 					{{ field.errors }}
-					{{ field }}
+					{{ field.label_tag }} {{ field }}
 				</div>
 				{% endfor %}
-				<input class="form-control btn btn-primary" type="submit" value="Entra" />
+
+				<button class="form-control btn-primary" type="submit">
+					<span class="glyphicon glyphicon-floppy-disk"></span> Desa
+				</button>
 			</form>
 		</div>
 	</div>
-
-	{% if messages %}
-
-	{% load bootstrap_tags %}
-	{% for message in messages %}
-	<div class="col-md-3 alert alert-{{ message.tags|bootstrap_tags }}">
-		{{ message }}
-	</div>
-	{% endfor %}
-	{% endif %}
-
 </div>
-
 {% endblock %}

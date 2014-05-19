@@ -43,9 +43,12 @@
 		border-top-right-radius: 0;
 	}
 </style>
-<h2 class="form-signin-heading">Emplena els camps per registrar-te</h2>
+<br/>
 <div class="container">
-	<form action="" method="post" class="form-signin" role="form">
+	<div class="panel panel-info">
+  <div class="panel-heading">Emplena els camps per registrar-te</div>
+  <div class="panel-body">
+    <form action="" method="post" class="form-signin" role="form">
 		{% csrf_token %}
 		{% for field in form.visible_fields %}
 		<div class="form-group">
@@ -55,6 +58,8 @@
 		{% endfor %}
 		<input class="form-control btn btn-primary" type="submit" value="Registra't" />
 	</form>
+  </div>
+</div>
 	{% if messages %}
 	
 	{% load bootstrap_tags %}

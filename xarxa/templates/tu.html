@@ -45,6 +45,7 @@
 				Publicacions <button class="btn btn-info" data-toggle="modal" data-target="#publi"><span class="glyphicon glyphicon-edit"></span> Nova pubublicació</button>
 			</div>
 			<div class="panel-body">
+				{% if publicacions %}
 				{% for publicacio in publicacions %}
 				<div class="col-md-12">
 					<div class="panel panel-default">
@@ -65,6 +66,9 @@
 					</div>
 				</div>
 				{% endfor %}
+				{% else %}
+					Encara no has publicat res
+				{% endif %}
 			</div>
 
 		</div>
