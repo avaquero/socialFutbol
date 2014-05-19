@@ -13,5 +13,4 @@ class formulariRegistrarse(forms.Form):
     nom = forms.CharField(max_length=50)
     cognoms = forms.CharField(max_length=50)
     dataNaix = forms.DateField()
-    equip = forms.CharField(max_length=50)
     

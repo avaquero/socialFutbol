@@ -71,10 +71,9 @@ def registrarse(request):
             nom = form.cleaned_data['nom']
             cognoms = form.cleaned_data['cognoms']
             dataNaix = form.cleaned_data['dataNaix']
-            equip = form.cleaned_data['equip']
             nouUser = User()
             nouUser.username = usuari
-            nouUser.password = contrasenya
+            nouUser.set_password(contrasenya)
             nouUser.save()
             
             user = User.objects.get(username = usuari)
@@ -84,7 +83,7 @@ def registrarse(request):
             nouPerfil.nom = nom
             nouPerfil.cognoms = cognoms
             nouPerfil.dataNaix = dataNaix
-            nouPerfil.equip = equip
+            nouPerfil.equip = "Encara no has introduit equip"
             nouPerfil.save()
             
             messages.success(request, "Molt bé, t'has registrat, ja pots accedir al portal")
@@ -99,7 +98,7 @@ def registrarse(request):
         form = formulariRegistrarse()
     
     #Afegir la clase de bootstrap als camps
-    camps_bootestrapejar =( 'nick', 'contrasenya', 'nom', 'cognoms', 'dataNaix', 'equip')
+    camps_bootestrapejar =( 'nick', 'contrasenya', 'nom', 'cognoms', 'dataNaix')
     for c in camps_bootestrapejar:
         form.fields[c].widget.attrs['class'] = 'form-control'
     form.fields['nick'].widget.attrs['placeholder'] = 'Nickname'
@@ -107,7 +106,6 @@ def registrarse(request):
     form.fields['nom'].widget.attrs['placeholder'] = 'Nom'
     form.fields['cognoms'].widget.attrs['placeholder'] = 'Cognoms'
     form.fields['dataNaix'].widget.attrs['placeholder'] = 'Data naixement'
-    form.fields['equip'].widget.attrs['placeholder'] = 'Equip actual'
     
     return render(request, 'registrarse.html', {
         'form': form,
