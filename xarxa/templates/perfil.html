@@ -34,9 +34,15 @@
 				</p>
 
 				{% if user.is_authenticated %}
+				{% if pendent %}
+				<b>Solicitud pendent</b>
+				{% endif %}
+				{% if amics %}
+				<a href="" class="btn btn-danger">Eliminar</a>
+				{% else %}
 				<a href="{% url 'perfil:nouAmic' perfil.id %}" class="btn btn-success">Afegir com amic</a>
 				{% endif %}
-
+				{% endif %}
 			</div>
 
 		</div>
@@ -50,7 +56,30 @@
 				Publicacions
 			</div>
 			<div class="panel-body">
+				{% if publicacions %}
+				{% for publicacio in publicacions %}
+				<div class="col-md-12">
+					<div class="panel panel-default">
+						<!-- Default panel contents -->
+						<div class="panel-heading">
+							{{ publicacio.dataHora }}
+						</div>
+						<div class="panel-body">
+							{% if publicacio.imatge %}
+							<p><img class="img-responsive" alt="Imatge publicacio" src="{{ publicacio.imatge.url }}" width="200px" height="200px"/>
+							</p>
+							{% endif %}
+							<p align="justify">
+								{{ publicacio.text }}
+							</p>
+						</div>
 
+					</div>
+				</div>
+				{% endfor %}
+				{% else %}
+					Encara no hi ha res publicat
+				{% endif %}
 			</div>
 
 		</div>

@@ -17,6 +17,7 @@ from django.utils import timezone
 def generarPerfil(request):
     perfil = request.user.perfil
     
+    ## Aqui es crea el formulari per obtenir el modal, amb aquest formulari
     if request.method == 'POST':
         form = FormNovaPublicacio(request.POST, request.FILES)
         if form.is_valid():      
@@ -53,7 +54,7 @@ def generarPerfil(request):
                                      Q(usuariSolicitant_id = perfil) | Q(usuariDestinatari_id = perfil),
                                      Q(acceptat=True)
                                      )
-    
+
     for amic in amics:
         if amic.usuariSolicitant_id == perfil.id:
             user_act = Perfil.objects.get(usuari = amic.usuariDestinatari_id)
@@ -69,9 +70,34 @@ def generarPerfil(request):
 #GENERAR PERFIL D'aLTRES
 def veurePerfil(request, idPerfil):
     perfil = get_object_or_404(Perfil, pk=idPerfil)
+    
     publicacions = Publicacio.objects.filter(usuari = perfil)
-
-    context = {'perfil':perfil, 'publicacions':publicacions }
+    
+    amics = False
+    pendent = False
+    
+    if request.user.is_authenticated():
+        yo = request.user.perfil
+        amics = Solicitud.objects.filter(
+                                         Q(usuariSolicitant_id = idPerfil) | Q(usuariDestinatari_id = idPerfil),
+                                         Q(usuariSolicitant_id = yo.id) | Q(usuariDestinatari_id = yo.id)
+                                         ).exists()
+        if amics:
+            mirarPendent = Solicitud.objects.filter(
+                                         Q(usuariSolicitant_id = idPerfil) | Q(usuariDestinatari_id = idPerfil),
+                                         Q(usuariSolicitant_id = yo.id) | Q(usuariDestinatari_id = yo.id)
+                                         )
+            for x in mirarPendent:
+                if x.acceptat:
+                    pendent = False
+                else:
+                    pendent= True  
+    
+    if not amics:
+        publicacions = publicacions.exclude( privat = True )
+    
+    
+    context = {'perfil':perfil, 'publicacions':publicacions, 'amics':amics, 'pendent':pendent }
         
     return render(request, 'perfil.html', context)
 
