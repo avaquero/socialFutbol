@@ -13,6 +13,7 @@ import datetime
 from django.utils import timezone
 
 # Create your views here.
+
 #GENERAR EL TEU PERFIL
 def generarPerfil(request):
     perfil = request.user.perfil
@@ -76,12 +77,14 @@ def veurePerfil(request, idPerfil):
     amics = False
     pendent = False
     
+    #Comprovo que l'usuari si esta autenticat si es aixi, miro si soc amic del perfil que visito
     if request.user.is_authenticated():
         yo = request.user.perfil
         amics = Solicitud.objects.filter(
                                          Q(usuariSolicitant_id = idPerfil) | Q(usuariDestinatari_id = idPerfil),
                                          Q(usuariSolicitant_id = yo.id) | Q(usuariDestinatari_id = yo.id)
                                          ).exists()
+        #si existeix un registre miro si som amics, o esta pendent la solicitud
         if amics:
             mirarPendent = Solicitud.objects.filter(
                                          Q(usuariSolicitant_id = idPerfil) | Q(usuariDestinatari_id = idPerfil),
@@ -93,6 +96,7 @@ def veurePerfil(request, idPerfil):
                 else:
                     pendent= True  
     
+    #A partir d'aqui si no som amics no mostro les publis privades, i si la solicitud es pendent tampoco mostro les privades
     if not amics:
         publicacions = publicacions.exclude( privat = True )
     
