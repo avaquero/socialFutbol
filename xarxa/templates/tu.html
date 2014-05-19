@@ -42,11 +42,11 @@
 		<div class="panel panel-info">
 			<!-- Default panel contents -->
 			<div class="panel-heading">
-				Publicacions
+				Publicacions <button class="btn btn-info" data-toggle="modal" data-target="#publi"><span class="glyphicon glyphicon-edit"></span> Nova pubublicació</button>
 			</div>
 			<div class="panel-body">
 				{% for publicacio in publicacions %}
-				<div class="col-xs-12 col-sm-6 col-md-8">
+				<div class="col-md-12">
 					<div class="panel panel-default">
 						<!-- Default panel contents -->
 						<div class="panel-heading">
@@ -57,7 +57,7 @@
 							<p><img class="img-responsive" alt="Imatge publicacio" src="{{ publicacio.imatge.url }}" width="200px" height="200px"/>
 							</p>
 							{% endif %}
-							<p>
+							<p align="justify">
 								{{ publicacio.text }}
 							</p>
 						</div>
@@ -109,6 +109,29 @@
 			</div>
 		</div>
 	</div>
+</div>
+
+<div class="modal fade" id="publi" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">Nova publicació</h4>
+      </div>
+      <div class="modal-body">
+        <form action="" method="post" class="form-signin" enctype="multipart/form-data" role="form" >
+		{% csrf_token %}
+		{% for field in form.visible_fields %}
+		<div class="form-group">
+			{{ field.errors }}
+			{{ field.label_tag }} {{ field }}
+		</div>
+		{% endfor %}
+		<input class="form-control btn btn-primary" type="submit" value="Crea" />
+	</form>
+      </div>
+    </div>
+  </div>
 </div>
 
 {% endblock %}

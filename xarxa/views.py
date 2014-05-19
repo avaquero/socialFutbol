@@ -8,17 +8,38 @@ from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 import datetime
 from django.db.models import Q
+from xarxa.forms import FormNovaPublicacio
+import datetime
+from django.utils import timezone
 
 # Create your views here.
 #GENERAR EL TEU PERFIL
 def generarPerfil(request):
     perfil = request.user.perfil
+    
+    if request.method == 'POST':
+        form = FormNovaPublicacio(request.POST, request.FILES)
+        if form.is_valid():      
+            publicacio=form.save(commit=False)
+            publicacio.usuari = perfil
+            publicacio.save()
+            pagina = reverse('perfil:tu')
+            return HttpResponseRedirect(pagina)
+        else:
+            messages.error(request, "Ep! Hi ha hagut un error al introduir un llibre")
+    else:
+        form = FormNovaPublicacio()
+    
+    camps_bootstrap = ('text', 'imatge', 'privat')
+    for c in camps_bootstrap:
+        form.fields[c].widget.attrs['class'] = 'form-control'
+    
+    
     publicacions = Publicacio.objects.filter(usuari = perfil).order_by('-dataHora')
     peticions = Solicitud.objects.filter(usuariDestinatari = perfil, acceptat = 0)
     nom = []
     idPeticio = []
     amigos = []
-    amigosFoto = []
     ids = []
     
     for peticio in peticions:
@@ -39,12 +60,10 @@ def generarPerfil(request):
         else:
             user_act = Perfil.objects.get(usuari = amic.usuariSolicitant_id)
         amigos.append(user_act.nom + " " + user_act.cognoms)
-        amigosFoto.append(user_act.imatgePerfil)
-        amigosFoto.reverse()
         ids.append(user_act.id)
         ids.reverse()
         
-    context = {'perfil':perfil, 'publicacions':publicacions, 'nom':nom, 'idPeticio':idPeticio, 'peticions':peticions, 'amigos':amigos, 'amigosFoto':amigosFoto, 'ids':ids }
+    context = {'perfil':perfil, 'publicacions':publicacions, 'nom':nom, 'idPeticio':idPeticio, 'peticions':peticions, 'amigos':amigos, 'ids':ids, 'form':form }
     return render(request, 'tu.html', context)
 
 #GENERAR PERFIL D'aLTRES
