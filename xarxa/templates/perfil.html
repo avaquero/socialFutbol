@@ -11,7 +11,7 @@
 		<div class="panel panel-info">
 			<!-- Default panel contents -->
 			<div class="panel-heading">
-				Dades personals
+				<span class="glyphicon glyphicon-info-sign"></span> Dades personals
 			</div>
 			<div class="panel-body">
 				{% if perfil.imatgePerfil %}
@@ -35,7 +35,7 @@
 
 				{% if user.is_authenticated %}
 				{% if pendent %}
-				<b>Solicitud pendent</b>
+				<span class="label label-default">Solicitud pendent</span>
 				{% endif %}
 				{% if amics %}
 				<a href="" class="btn btn-danger">Eliminar</a>

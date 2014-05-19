@@ -96,6 +96,8 @@ def veurePerfil(request, idPerfil):
     if not amics:
         publicacions = publicacions.exclude( privat = True )
     
+    if pendent == True:
+        publicacions = publicacions.exclude( privat = True )
     
     context = {'perfil':perfil, 'publicacions':publicacions, 'amics':amics, 'pendent':pendent }
         
