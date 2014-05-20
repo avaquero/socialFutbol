@@ -109,7 +109,7 @@
 					{% for noms in nom %}
 					{% with pet=idPeticio.pop %}
 					<tr>
-						<td>Peticio de: {{ noms }}</td>
+						<td>Peticio de: <a href="{% url 'perfil:perfilAjeno' link %}">{{ noms }}</a></td>
 						<td><a href="{% url 'perfil:acceptarAmic' pet %}" class="btn btn-success">Acceptar</a>
 							<a href="{% url 'perfil:eliminar' pet %}" class="btn btn-danger">Denegar</a></td>
 					</tr>

@@ -17,7 +17,7 @@ from django.utils import timezone
 #GENERAR EL TEU PERFIL
 def generarPerfil(request):
     perfil = request.user.perfil
-    
+
     ## Formulari per crear comentaris
     #Crear formulari per comentar publicacions
     if request.method == 'GET':
@@ -59,10 +59,14 @@ def generarPerfil(request):
     amigos = []
     ids = []
     
+    #variable per poder fer link al perfil que et fa la peticio
+    link = ""
+    
     for peticio in peticions:
         user_act = Perfil.objects.get(usuari = peticio.usuariSolicitant_id)
         #emmagatzemar en una llista / array
         nom.append(user_act.nom + " " + user_act.cognoms)
+        link = user_act.id
         idPeticio.append(peticio.id)
         idPeticio.reverse() #Ordenar la llista al reves per despres fer el pop al template i treurels ordenats
     
@@ -80,7 +84,7 @@ def generarPerfil(request):
         ids.append(user_act.id)
         ids.reverse()
         
-    context = {'perfil':perfil, 'publicacions':publicacions, 'nom':nom, 'idPeticio':idPeticio, 'peticions':peticions, 'amigos':amigos, 'ids':ids, 'form':form, 'comentaris':comentaris, 'com':com }
+    context = {'perfil':perfil, 'publicacions':publicacions, 'nom':nom, 'idPeticio':idPeticio, 'peticions':peticions, 'amigos':amigos, 'ids':ids, 'form':form, 'comentaris':comentaris, 'com':com, 'link':link }
     return render(request, 'tu.html', context)
 
 #GENERAR PERFIL D'aLTRES
@@ -161,12 +165,19 @@ def afegirAmic(request, idPerfil):
 
 @login_required
 def acceptarAmic(request, idLinea):
-    Solicitud.objects.filter(id = idLinea).update(acceptat=True)
+    Solicitud.objects.filter(
+                             Q(usuariSolicitant_id = request.user.perfil.id) | Q(usuariDestinatari_id = request.user.perfil.id),
+                             Q(id = idLinea)
+                             ).update(acceptat=True)
     pagina = reverse('perfil:tu')
     return HttpResponseRedirect(pagina)
 
 @login_required
 def eliminarSolicitud(request, idLinea):
-    Solicitud.objects.filter(id = idLinea).delete()
+    Solicitud.objects.filter(
+                             Q(usuariSolicitant_id = request.user.perfil.id) | Q(usuariDestinatari_id = request.user.perfil.id),
+                             Q(id = idLinea)
+                             ).delete()
+    
     pagina = reverse('perfil:tu')
     return HttpResponseRedirect(pagina)
