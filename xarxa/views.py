@@ -92,6 +92,7 @@ def veurePerfil(request, idPerfil):
     
     amics = False
     pendent = False
+    linea = ""
     
     #Comprovo que l'usuari si esta autenticat si es aixi, miro si soc amic del perfil que visito
     if request.user.is_authenticated():
@@ -110,7 +111,8 @@ def veurePerfil(request, idPerfil):
                 if x.acceptat:
                     pendent = False
                 else:
-                    pendent= True  
+                    pendent= True
+                linea = x.id  
     
     #A partir d'aqui si no som amics no mostro les publis privades, i si la solicitud es pendent tampoco mostro les privades
     if not amics:
@@ -136,7 +138,7 @@ def veurePerfil(request, idPerfil):
     #for c in camps_bootstrap:
         #form.fields[c].widget.attrs['class'] = 'form-control'
     
-    context = {'perfil':perfil, 'publicacions':publicacions, 'amics':amics, 'pendent':pendent, 'comentaris':comentaris, 'form':form }
+    context = {'perfil':perfil, 'publicacions':publicacions, 'amics':amics, 'pendent':pendent, 'comentaris':comentaris, 'form':form, 'linea':linea }
         
     return render(request, 'perfil.html', context)
 
@@ -162,4 +164,9 @@ def acceptarAmic(request, idLinea):
     Solicitud.objects.filter(id = idLinea).update(acceptat=True)
     pagina = reverse('perfil:tu')
     return HttpResponseRedirect(pagina)
-    
+
+@login_required
+def eliminarSolicitud(request, idLinea):
+    Solicitud.objects.filter(id = idLinea).delete()
+    pagina = reverse('perfil:tu')
+    return HttpResponseRedirect(pagina)

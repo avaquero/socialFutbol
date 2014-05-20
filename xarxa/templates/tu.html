@@ -70,6 +70,7 @@
 							<button class="btn btn-info" data-toggle="modal" data-target="#coment" onclick="Comentar({{publicacio.id}})">
 								<span class="glyphicon glyphicon-edit"></span> Comenta
 							</button>
+							<br/><br/>
 							{% for comentari in comentaris %}
 							{% if publicacio == comentari.publicacio %}
 							<div class="panel panel-success">
@@ -106,10 +107,13 @@
 				<table>
 
 					{% for noms in nom %}
+					{% with pet=idPeticio.pop %}
 					<tr>
 						<td>Peticio de: {{ noms }}</td>
-						<td><a href="{% url 'perfil:acceptarAmic' idPeticio.pop %}" class="btn btn-success">Acceptar</a><a class="btn btn-danger">Denegar</a></td>
+						<td><a href="{% url 'perfil:acceptarAmic' pet %}" class="btn btn-success">Acceptar</a>
+							<a href="{% url 'perfil:eliminar' pet %}" class="btn btn-danger">Denegar</a></td>
 					</tr>
+					{% endwith %}
 					{% endfor %}
 				</table>
 

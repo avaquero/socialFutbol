@@ -38,7 +38,7 @@
 				<span class="label label-default">Solicitud pendent</span>
 				{% endif %}
 				{% if amics %}
-				<a href="" class="btn btn-danger">Eliminar</a>
+				<a href="{% url 'perfil:eliminar' linea %}" class="btn btn-danger">Eliminar</a>
 				{% else %}
 				<a href="{% url 'perfil:nouAmic' perfil.id %}" class="btn btn-success">Afegir com amic</a>
 				{% endif %}
@@ -80,6 +80,7 @@
 							<button class="btn btn-info" data-toggle="modal" data-target="#coment" onclick="Comentar({{publicacio.id}})">
 								<span class="glyphicon glyphicon-edit"></span> Comenta
 							</button>
+							<br/><br/>
 							{% endif %}
 							{% for comentari in comentaris %}
 							{% if publicacio == comentari.publicacio %}

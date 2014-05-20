@@ -6,5 +6,6 @@ urlpatterns = patterns('',
     url(r'^(?P<idPerfil>\d+)$', views.veurePerfil, name='perfilAjeno'),
     url(r'^nouAmic/(?P<idPerfil>\d+)$', views.afegirAmic, name='nouAmic'),
     url(r'^acceptarAmic/(?P<idLinea>\d+)$', views.acceptarAmic, name='acceptarAmic'),
+    url(r'^eliminar/(?P<idLinea>\d+)$', views.eliminarSolicitud, name='eliminar'),
     #url(r'^logout$', views.sortir, name='logout'),
 )
