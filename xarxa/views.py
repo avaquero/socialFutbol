@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 import datetime
 from django.db.models import Q
-from xarxa.forms import FormNovaPublicacio
+from xarxa.forms import FormNovaPublicacio, FormNouComentari
 import datetime
 from django.utils import timezone
 
@@ -17,6 +17,21 @@ from django.utils import timezone
 #GENERAR EL TEU PERFIL
 def generarPerfil(request):
     perfil = request.user.perfil
+    
+    ## Formulari per crear comentaris
+    #Crear formulari per comentar publicacions
+    if request.method == 'GET':
+        com = FormNouComentari(request.GET)
+        if com.is_valid():      
+            comentari=com.save(commit=False)
+            comentari.publicacio_id = request.GET['publicacio']
+            comentari.usuari = request.user.perfil
+            comentari.save()
+            pagina = reverse('perfil:tu')
+            return HttpResponseRedirect(pagina)
+    else:
+        form = FormNouComentari()
+    
     
     ## Aqui es crea el formulari per obtenir el modal, amb aquest formulari
     if request.method == 'POST':
@@ -36,7 +51,7 @@ def generarPerfil(request):
     for c in camps_bootstrap:
         form.fields[c].widget.attrs['class'] = 'form-control'
     
-    
+    comentaris = Comentari.objects.all()
     publicacions = Publicacio.objects.filter(usuari = perfil).order_by('-dataHora')
     peticions = Solicitud.objects.filter(usuariDestinatari = perfil, acceptat = 0)
     nom = []
@@ -65,14 +80,15 @@ def generarPerfil(request):
         ids.append(user_act.id)
         ids.reverse()
         
-    context = {'perfil':perfil, 'publicacions':publicacions, 'nom':nom, 'idPeticio':idPeticio, 'peticions':peticions, 'amigos':amigos, 'ids':ids, 'form':form }
+    context = {'perfil':perfil, 'publicacions':publicacions, 'nom':nom, 'idPeticio':idPeticio, 'peticions':peticions, 'amigos':amigos, 'ids':ids, 'form':form, 'comentaris':comentaris, 'com':com }
     return render(request, 'tu.html', context)
 
 #GENERAR PERFIL D'aLTRES
 def veurePerfil(request, idPerfil):
     perfil = get_object_or_404(Perfil, pk=idPerfil)
     
-    publicacions = Publicacio.objects.filter(usuari = perfil)
+    publicacions = Publicacio.objects.filter(usuari = perfil).order_by('-dataHora')
+    comentaris = Comentari.objects.all()
     
     amics = False
     pendent = False
@@ -102,8 +118,25 @@ def veurePerfil(request, idPerfil):
     
     if pendent == True:
         publicacions = publicacions.exclude( privat = True )
+        
+    #Crear formulari per comentar publicacions
+    if request.method == 'GET':
+        form = FormNouComentari(request.GET)
+        if form.is_valid():      
+            comentari=form.save(commit=False)
+            comentari.publicacio_id = request.GET['publicacio']
+            comentari.usuari = request.user.perfil
+            comentari.save()
+            pagina = reverse('perfil:perfilAjeno', kwargs={'idPerfil':idPerfil})
+            return HttpResponseRedirect(pagina)
+    else:
+        form = FormNouComentari()
     
-    context = {'perfil':perfil, 'publicacions':publicacions, 'amics':amics, 'pendent':pendent }
+    #camps_bootstrap = ('comentari')
+    #for c in camps_bootstrap:
+        #form.fields[c].widget.attrs['class'] = 'form-control'
+    
+    context = {'perfil':perfil, 'publicacions':publicacions, 'amics':amics, 'pendent':pendent, 'comentaris':comentaris, 'form':form }
         
     return render(request, 'perfil.html', context)
 

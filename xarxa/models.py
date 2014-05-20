@@ -14,5 +14,5 @@ class Publicacio(models.Model):
 class Comentari(models.Model):
     publicacio = models.ForeignKey(Publicacio)
     usuari = models.ForeignKey(Perfil)
-    comentari = models.TextField(default=timezone.now)
-    dataHora = models.DateTimeField()
+    comentari = models.TextField()
+    dataHora = models.DateTimeField(default=timezone.now)

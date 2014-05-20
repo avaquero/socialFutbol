@@ -42,13 +42,16 @@
 		<div class="panel panel-info">
 			<!-- Default panel contents -->
 			<div class="panel-heading">
-				Publicacions <button class="btn btn-info" data-toggle="modal" data-target="#publi"><span class="glyphicon glyphicon-edit"></span> Nova publicació</button>
+				Publicacions
+				<button class="btn btn-info" data-toggle="modal" data-target="#publi">
+					<span class="glyphicon glyphicon-edit"></span> Nova publicació
+				</button>
 			</div>
 			<div class="panel-body">
 				{% if publicacions %}
 				{% for publicacio in publicacions %}
 				<div class="col-md-12">
-					<div class="panel panel-default">
+					<div class="panel panel-primary">
 						<!-- Default panel contents -->
 						<div class="panel-heading">
 							{{ publicacio.dataHora }}
@@ -61,13 +64,32 @@
 							<p align="justify">
 								{{ publicacio.text }}
 							</p>
-						</div>
 
+						</div>
+						<div class="panel-footer">
+							<button class="btn btn-info" data-toggle="modal" data-target="#coment" onclick="Comentar({{publicacio.id}})">
+								<span class="glyphicon glyphicon-edit"></span> Comenta
+							</button>
+							{% for comentari in comentaris %}
+							{% if publicacio == comentari.publicacio %}
+							<div class="panel panel-success">
+								<div class="panel-heading">
+									{{ comentari.usuari.nom }} {{ comentari.usuari.cognoms }} - {{ comentari.dataHora }}
+								</div>
+								<div class="panel-body">
+									<p align="justify">
+										{{ comentari.comentari }}
+									</p>
+								</div>
+							</div>
+							{% endif %}
+							{% endfor %}
+						</div>
 					</div>
 				</div>
 				{% endfor %}
 				{% else %}
-					Encara no has publicat res
+				Encara no has publicat res
 				{% endif %}
 			</div>
 
@@ -95,47 +117,76 @@
 		</div>
 		{% endif %}
 		<div class="panel panel-info">
-				<!-- Default panel contents -->
-				<div class="panel-heading">
-					<span class="glyphicon glyphicon-user"></span> Amics
-				</div>
-				<div class="panel-body">
-					{% if amigos %}
-						{% for amic in amigos %}
-							<p><a href="{% url 'perfil:perfilAjeno' ids.pop %}">{{ amic }}</a></p>
-						{% endfor %}
-					{% else %}
-					<p>
-						Encara no tens amics
-					</p>
-					{% endif %}
-				</div>
+			<!-- Default panel contents -->
+			<div class="panel-heading">
+				<span class="glyphicon glyphicon-user"></span> Amics
+			</div>
+			<div class="panel-body">
+				{% if amigos %}
+				{% for amic in amigos %}
+				<p>
+					<a href="{% url 'perfil:perfilAjeno' ids.pop %}">{{ amic }}</a>
+				</p>
+				{% endfor %}
+				{% else %}
+				<p>
+					Encara no tens amics
+				</p>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+
+<div class="modal fade" id="publi" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+					&times;
+				</button>
+				<h4 class="modal-title" id="myModalLabel">Nova publicació</h4>
+			</div>
+			<div class="modal-body">
+				<form action="" method="post" class="form-signin" enctype="multipart/form-data" role="form" tipus="publicacio" >
+					{% csrf_token %}
+					{% for field in form.visible_fields %}
+					<div class="form-group">
+						{{ field.errors }}
+						{{ field.label_tag }} {{ field }}
+					</div>
+					{% endfor %}
+					<input class="form-control btn btn-primary" type="submit" value="Crea" />
+				</form>
 			</div>
 		</div>
 	</div>
 </div>
 
-<div class="modal fade" id="publi" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title" id="myModalLabel">Nova publicació</h4>
-      </div>
-      <div class="modal-body">
-        <form action="" method="post" class="form-signin" enctype="multipart/form-data" role="form" >
-		{% csrf_token %}
-		{% for field in form.visible_fields %}
-		<div class="form-group">
-			{{ field.errors }}
-			{{ field.label_tag }} {{ field }}
+<div class="modal fade" id="coment" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+					&times;
+				</button>
+				<h4 class="modal-title" id="myModalLabel">Nou comentari</h4>
+			</div>
+			<div class="modal-body">
+				<form action="" method="get" class="form-signin" enctype="multipart/form-data" role="form" tipus="publicacio" >
+					{% csrf_token %}
+					{% for field in com.visible_fields %}
+					<div class="form-group">
+						{{ field }}
+					</div>
+					{% endfor %}
+					<input type="hidden" id="publicacio" name="publicacio" value=""/>
+					<input class="form-control btn btn-primary" type="submit" value="Comenta" />
+				</form>
+			</div>
 		</div>
-		{% endfor %}
-		<input class="form-control btn btn-primary" type="submit" value="Crea" />
-	</form>
-      </div>
-    </div>
-  </div>
+	</div>
 </div>
 
 {% endblock %}
