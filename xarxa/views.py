@@ -180,3 +180,24 @@ def eliminarSolicitud(request, idLinea):
     
     pagina = reverse('perfil:tu')
     return HttpResponseRedirect(pagina)
+
+@login_required
+def modificaPublicacio(request, idPublicacio):
+    perfil = request.user.perfil
+    publicacio = get_object_or_404(Publicacio, pk = idPublicacio, usuari = perfil)
+    
+    if request.method == 'POST':
+        form = FormNovaPublicacio(request.POST, request.FILES, instance = publicacio)
+        if form.is_valid():
+            form.save()
+            pagina = reverse('perfil:tu')
+            return HttpResponseRedirect(pagina)
+        else:
+            messages.error(request, "Hi ha hagut un error al modificar la publicacio")
+    else:
+        form = FormNovaPublicacio(instance = publicacio)
+        
+    camps_bootstrap = ('text', 'privat')
+    for c in camps_bootstrap:
+        form.fields[c].widget.attrs['class'] = 'form-control'
+    return render(request, 'modificarPublicacio.html', {'form':form,})

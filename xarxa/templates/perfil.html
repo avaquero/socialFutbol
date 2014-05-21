@@ -86,7 +86,7 @@
 							{% if publicacio == comentari.publicacio %}
 							<div class="panel panel-success">
 								<div class="panel-heading">
-									{{ comentari.usuari.nom }} {{ comentari.usuari.cognoms }} - {{ comentari.dataHora }}
+									<a href="{% url 'perfil:perfilAjeno' comentari.usuari.id %}">{{ comentari.usuari.nom }} {{ comentari.usuari.cognoms }}</a> - {{ comentari.dataHora }}
 								</div>
 								<div class="panel-body">
 									<p align="justify">

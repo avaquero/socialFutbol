@@ -54,7 +54,13 @@
 					<div class="panel panel-primary">
 						<!-- Default panel contents -->
 						<div class="panel-heading">
-							{{ publicacio.dataHora }}
+							{{ publicacio.dataHora }} <a href="{% url 'perfil:modificar' publicacio.id %}" class="btn btn-info"><span class="glyphicon glyphicon-edit"></span> Edita</a>
+							-- Publicació: 
+							{% if publicacio.privat == True%}
+							Privada
+							{% else %}
+							Pública
+							{% endif %}
 						</div>
 						<div class="panel-body">
 							{% if publicacio.imatge %}
@@ -75,7 +81,7 @@
 							{% if publicacio == comentari.publicacio %}
 							<div class="panel panel-success">
 								<div class="panel-heading">
-									{{ comentari.usuari.nom }} {{ comentari.usuari.cognoms }} - {{ comentari.dataHora }}
+									<a href="{% url 'perfil:perfilAjeno' comentari.usuari.id %}">{{ comentari.usuari.nom }} {{ comentari.usuari.cognoms }}</a> - {{ comentari.dataHora }}
 								</div>
 								<div class="panel-body">
 									<p align="justify">
