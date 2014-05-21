@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 from django.shortcuts import render, get_object_or_404
 from perfils.models import Perfil
-from perfils.forms import formulariLogin, formulariModificar, formulariRegistrarse
+from perfils.forms import formulariLogin, formulariModificar, formulariRegistrarse, formulariEditarContrasenya
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.http.response import HttpResponseRedirect
@@ -132,3 +132,37 @@ def modificarDadesPerfil(request):
     for c in camps_bootstrap:
         form.fields[c].widget.attrs['class'] = 'form-control'
     return render(request, 'modificarDades.html', {'form':form,})
+
+@login_required
+def canviaContrasenya(request):
+    if request.method == 'POST':
+        form = formulariEditarContrasenya(request.POST)
+        if form.is_valid():
+            nova = form.cleaned_data['nova']
+            novaComprova = form.cleaned_data['novaComprova']
+            antiga = form.cleaned_data['antiga']
+            usuari = request.user
+            if usuari.check_password(antiga):
+                if nova != novaComprova:
+                    messages.error(request, "Les contrasenyes no corresponen")
+                    tu = reverse('accedir:canviPass')
+                    return HttpResponseRedirect(tu)
+                else:
+                    usuari.set_password(nova)
+                    usuari.save()
+                    messages.success(request, "Contrasenya canviada conrrectament")
+                    tu = reverse('perfil:tu')
+                    return HttpResponseRedirect(tu)
+            else:
+                messages.error(request, "La contrasenya actual no es correcte")
+    else:
+        form = formulariEditarContrasenya()
+    
+    camps_bootestrapejar =( 'antiga', 'nova', 'novaComprova')
+    for c in camps_bootestrapejar:
+        form.fields[c].widget.attrs['class'] = 'form-control'
+    form.fields['antiga'].widget.attrs['placeholder'] = 'Antiga contrasenya'
+    form.fields['nova'].widget.attrs['placeholder'] = 'Contrasenya nova'
+    form.fields['novaComprova'].widget.attrs['placeholder'] = 'Repeteix la nova contrasenya'
+
+    return render(request, 'canviContrasenya.html', { 'form': form })

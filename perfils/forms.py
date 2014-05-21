@@ -21,3 +21,8 @@ class formulariModificar(ModelForm):
     class Meta:
         model = Perfil
         fields= ['nom','cognoms', 'dataNaix', 'equip', 'imatgePerfil']
+        
+class formulariEditarContrasenya(forms.Form):
+    antiga = forms.CharField(max_length=100, widget=forms.PasswordInput() )
+    nova = forms.CharField(max_length=100, widget=forms.PasswordInput() )
+    novaComprova = forms.CharField(max_length=100, widget=forms.PasswordInput() )

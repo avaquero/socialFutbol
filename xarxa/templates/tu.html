@@ -6,6 +6,19 @@
 {% block content %}
 
 <div class="row">
+	{% if messages %}
+
+	{% load bootstrap_tags %}
+	{% for message in messages %}
+	<div class="col-md-3 alert alert-{{ message.tags|bootstrap_tags }} alert-dismissable">
+		<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+		{{ message }}
+	</div>
+	
+	{% endfor %}
+	{% endif %}
+</div>
+<div class="row">
 	<br/>
 	<div class="col-md-3">
 		<div class="panel panel-info">
@@ -55,7 +68,7 @@
 						<!-- Default panel contents -->
 						<div class="panel-heading">
 							{{ publicacio.dataHora }} <a href="{% url 'perfil:modificar' publicacio.id %}" class="btn btn-info"><span class="glyphicon glyphicon-edit"></span> Edita</a>
-							-- Publicació: 
+							-- Publicació:
 							{% if publicacio.privat == True%}
 							Privada
 							{% else %}
@@ -76,7 +89,8 @@
 							<button class="btn btn-info" data-toggle="modal" data-target="#coment" onclick="Comentar({{publicacio.id}})">
 								<span class="glyphicon glyphicon-edit"></span> Comenta
 							</button>
-							<br/><br/>
+							<br/>
+							<br/>
 							{% for comentari in comentaris %}
 							{% if publicacio == comentari.publicacio %}
 							<div class="panel panel-success">
@@ -116,8 +130,7 @@
 					{% with pet=idPeticio.pop %}
 					<tr>
 						<td>Peticio de: <a href="{% url 'perfil:perfilAjeno' link %}">{{ noms }}</a></td>
-						<td><a href="{% url 'perfil:acceptarAmic' pet %}" class="btn btn-success">Acceptar</a>
-							<a href="{% url 'perfil:eliminar' pet %}" class="btn btn-danger">Denegar</a></td>
+						<td><a href="{% url 'perfil:acceptarAmic' pet %}" class="btn btn-success">Acceptar</a><a href="{% url 'perfil:eliminar' pet %}" class="btn btn-danger">Denegar</a></td>
 					</tr>
 					{% endwith %}
 					{% endfor %}
