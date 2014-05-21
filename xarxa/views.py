@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.db.models import Q
-from xarxa.forms import FormNovaPublicacio, FormNouComentari
+from xarxa.forms import FormNovaPublicacio, FormNouComentari, BuscaForm
 import datetime
 from django.utils import timezone
 
@@ -201,3 +201,21 @@ def modificaPublicacio(request, idPublicacio):
     for c in camps_bootstrap:
         form.fields[c].widget.attrs['class'] = 'form-control'
     return render(request, 'modificarPublicacio.html', {'form':form,})
+
+def recerca(request):
+    if request.method == 'POST':
+        form = BuscaForm(request.POST)
+        if form.is_valid():
+            buscat = form.cleaned_data['busca']
+            
+            url_next = reverse('recerca')
+            return HttpResponseRedirect( url_next + "?q=" + buscat)
+        else:
+            messages.error(request, "Ep! Busqueda no vàlida")
+            return HttpResponseRedirect('/')
+        
+    else:    
+        form = BuscaForm()   
+        buscat = request.GET.get("q", '')
+        perfils = Perfil.objects.filter(nom__contains= buscat)
+    return render(request, 'recerca.html', { 'formCerca': form, 'perfils':perfils })
