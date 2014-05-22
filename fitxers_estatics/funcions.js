@@ -1,3 +1,36 @@
 function Comentar(id){
 	document.getElementById('publicacio').value = id;
 }
+
+$(document).ready(function() {
+	$('#id_busca').keyup(function(){
+		$('#prova').empty();
+		$('#buscar').empty();
+		var nom = document.getElementById('id_busca').value;
+		
+		$.ajax({
+			url: "http://127.0.0.1:8000/perfil/buscar",
+			type: "GET",
+			dataType: "json",
+			data: {
+				cadena : nom,
+				max : 20,
+			},//fi data
+			success: function(perfils){
+				$("#buscar").append("<ul class='list-group' id='llista'></ul>");
+				$.each(perfils, function(){
+					var nom = this['fields']['nom'];
+					var cognoms = this['fields']['cognoms'];
+					
+					$('#llista').append("<li class='list-group-item'>" + nom + " " + cognoms + "</li>");
+					
+					
+				});//fi function
+			}, //fi succes
+			error: function(xhr,errmsg,err){
+				$('#prova').append('<p>Error</p>');
+			}
+		});//fi ajax
+		return false;
+	});//fi idbusca
+});// fi ready

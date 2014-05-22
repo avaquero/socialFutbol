@@ -8,5 +8,6 @@ urlpatterns = patterns('',
     url(r'^acceptarAmic/(?P<idLinea>\d+)$', views.acceptarAmic, name='acceptarAmic'),
     url(r'^eliminar/(?P<idLinea>\d+)$', views.eliminarSolicitud, name='eliminar'),
     url(r'^modificaPub/(?P<idPublicacio>\d+)$', views.modificaPublicacio, name='modificar'),
+    url(r'^buscar$', views.perfils, name='perfil'),
     #url(r'^logout$', views.sortir, name='logout'),
 )

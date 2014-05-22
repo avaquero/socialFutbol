@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 from django.shortcuts import render, get_object_or_404
-from django.http.response import HttpResponseRedirect
+from django.http.response import HttpResponseRedirect, HttpResponse
 from perfils.models import Perfil, Solicitud
 from xarxa.models import Publicacio, Comentari
 from django.contrib import messages
@@ -10,6 +10,9 @@ from django.db.models import Q
 from xarxa.forms import FormNovaPublicacio, FormNouComentari, BuscaForm
 import datetime
 from django.utils import timezone
+from django.utils import simplejson
+import json
+from django.core import serializers
 
 # Create your views here.
 
@@ -219,3 +222,15 @@ def recerca(request):
         buscat = request.GET.get("q", '')
         perfils = Perfil.objects.filter(nom__contains= buscat)
     return render(request, 'recerca.html', { 'formCerca': form, 'perfils':perfils })
+
+def perfils(request):
+    cadena = request.GET['cadena']
+    max = request.GET['max']
+    nom = Q(nom__contains = cadena)
+    cognom = Q(cognoms__contains = cadena)
+    perfils = Perfil.objects.filter(nom | cognom)
+    
+    perfilsJson = serializers.serialize('json', perfils)
+    return HttpResponse(perfilsJson, content_type="application/json")
+              
+    
