@@ -15,4 +15,4 @@ class FormNouComentari(ModelForm):
         fields = ['comentari']
         
 class BuscaForm(forms.Form):
-    busca = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'class':'form-control','placeholder':'Cerca perfils'}))
+    busca = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'class':'form-control','placeholder':'Cerca perfils','autocomplete':'off'}))

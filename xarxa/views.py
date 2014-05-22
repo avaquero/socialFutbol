@@ -45,7 +45,7 @@ def generarPerfil(request):
             pagina = reverse('perfil:tu')
             return HttpResponseRedirect(pagina)
         else:
-            messages.error(request, "Ep! Hi ha hagut un error al introduir un llibre")
+            messages.error(request, "Ep! Hi ha hagut un error al introduir la publicacio")
     else:
         form = FormNovaPublicacio()
     
@@ -225,12 +225,13 @@ def recerca(request):
 
 def perfils(request):
     cadena = request.GET['cadena']
-    max = request.GET['max']
+    #max = request.GET['max'] falta implementar
     nom = Q(nom__contains = cadena)
     cognom = Q(cognoms__contains = cadena)
     perfils = Perfil.objects.filter(nom | cognom)
     
     perfilsJson = serializers.serialize('json', perfils)
+    
     return HttpResponse(perfilsJson, content_type="application/json")
               
     

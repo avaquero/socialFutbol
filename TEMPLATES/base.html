@@ -20,6 +20,11 @@
 				padding: 40px 15px;
 				text-align: center;
 			}
+			#buscar {
+				position: absolute;
+				z-index: 2;
+			}
+			
 		</style>
 	</head>
 
@@ -93,6 +98,9 @@
 					<div class="form-group">
 						{% csrf_token %}
 						{{ formCerca.busca }}
+					</div>
+					<div id="buscar">
+						
 					</div>
 				</form>
 					</ul>
