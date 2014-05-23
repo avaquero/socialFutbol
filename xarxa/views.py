@@ -17,76 +17,83 @@ import datetime
 
 #GENERAR EL TEU PERFIL
 def generarPerfil(request):
-    perfil = request.user.perfil
-
-    ## Formulari per crear comentaris
-    #Crear formulari per comentar publicacions
-    if request.method == 'GET':
-        com = FormNouComentari(request.GET)
-        if com.is_valid():      
-            comentari=com.save(commit=False)
-            comentari.publicacio_id = request.GET['publicacio']
-            comentari.usuari = request.user.perfil
-            comentari.save()
-            pagina = reverse('perfil:tu')
-            return HttpResponseRedirect(pagina)
+    
+    if not request.user.is_authenticated():
+        pagina = reverse('accedir:login')
+        messages.error(request, "Encara no has iniciat sessio")
+        return HttpResponseRedirect(pagina)
     else:
-        form = FormNouComentari()
-    
-    
-    ## Aqui es crea el formulari per obtenir el modal, amb aquest formulari
-    if request.method == 'POST':
-        form = FormNovaPublicacio(request.POST, request.FILES)
-        if form.is_valid():      
-            publicacio=form.save(commit=False)
-            publicacio.usuari = perfil
-            publicacio.save()
-            pagina = reverse('perfil:tu')
-            return HttpResponseRedirect(pagina)
+        perfil = request.user.perfil
+        ## Formulari per crear comentaris
+        #Crear formulari per comentar publicacions
+        if request.method == 'GET':
+            com = FormNouComentari(request.GET)
+            if com.is_valid():      
+                comentari=com.save(commit=False)
+                comentari.publicacio_id = request.GET['publicacio']
+                comentari.usuari = request.user.perfil
+                comentari.save()
+                pagina = reverse('perfil:tu')
+                return HttpResponseRedirect(pagina)
         else:
-            messages.error(request, "Ep! Hi ha hagut un error al introduir la publicacio")
-    else:
-        form = FormNovaPublicacio()
-    
-    camps_bootstrap = ('text', 'privat')
-    for c in camps_bootstrap:
-        form.fields[c].widget.attrs['class'] = 'form-control'
-    
-    comentaris = Comentari.objects.all()
-    publicacions = Publicacio.objects.filter(usuari = perfil).order_by('-dataHora')
-    peticions = Solicitud.objects.filter(usuariDestinatari = perfil, acceptat = 0)
-    nom = []
-    idPeticio = []
-    amigos = []
-    ids = []
-    
-    #variable per poder fer link al perfil que et fa la peticio
-    link = ""
-    
-    for peticio in peticions:
-        user_act = Perfil.objects.get(usuari = peticio.usuariSolicitant_id)
-        #emmagatzemar en una llista / array
-        nom.append(user_act.nom + " " + user_act.cognoms)
-        link = user_act.id
-        idPeticio.append(peticio.id)
-        idPeticio.reverse() #Ordenar la llista al reves per despres fer el pop al template i treurels ordenats
-    
-    amics = Solicitud.objects.filter(
-                                     Q(usuariSolicitant_id = perfil) | Q(usuariDestinatari_id = perfil),
-                                     Q(acceptat=True)
-                                     )
-
-    for amic in amics:
-        if amic.usuariSolicitant_id == perfil.id:
-            user_act = Perfil.objects.get(usuari = amic.usuariDestinatari_id)
-        else:
-            user_act = Perfil.objects.get(usuari = amic.usuariSolicitant_id)
-        amigos.append(user_act.nom + " " + user_act.cognoms)
-        ids.append(user_act.id)
-        ids.reverse()
+            form = FormNouComentari()
         
-    context = {'perfil':perfil, 'publicacions':publicacions, 'nom':nom, 'idPeticio':idPeticio, 'peticions':peticions, 'amigos':amigos, 'ids':ids, 'form':form, 'comentaris':comentaris, 'com':com, 'link':link }
-    return render(request, 'tu.html', context)
+        
+        ## Aqui es crea el formulari per obtenir el modal, amb aquest formulari
+        if request.method == 'POST':
+            form = FormNovaPublicacio(request.POST, request.FILES)
+            if form.is_valid():      
+                publicacio=form.save(commit=False)
+                publicacio.usuari = perfil
+                publicacio.save()
+                pagina = reverse('perfil:tu')
+                return HttpResponseRedirect(pagina)
+            else:
+                messages.error(request, "ERROR! No s'ha pogut crear la publicació perque no has indtoduït cap dada")
+                pagina = reverse('perfil:tu')
+                return HttpResponseRedirect(pagina)
+        else:
+            form = FormNovaPublicacio()
+        
+        camps_bootstrap = ('text', 'privat')
+        for c in camps_bootstrap:
+            form.fields[c].widget.attrs['class'] = 'form-control'
+        
+        comentaris = Comentari.objects.all()
+        publicacions = Publicacio.objects.filter(usuari = perfil).order_by('-dataHora')
+        peticions = Solicitud.objects.filter(usuariDestinatari = perfil, acceptat = 0)
+        nom = []
+        idPeticio = []
+        amigos = []
+        ids = []
+        
+        #variable per poder fer link al perfil que et fa la peticio
+        link = ""
+        
+        for peticio in peticions:
+            user_act = Perfil.objects.get(usuari = peticio.usuariSolicitant_id)
+            #emmagatzemar en una llista / array
+            nom.append(user_act.nom + " " + user_act.cognoms)
+            link = user_act.id
+            idPeticio.append(peticio.id)
+            idPeticio.reverse() #Ordenar la llista al reves per despres fer el pop al template i treurels ordenats
+        
+        amics = Solicitud.objects.filter(
+                                         Q(usuariSolicitant_id = perfil) | Q(usuariDestinatari_id = perfil),
+                                         Q(acceptat=True)
+                                         )
+    
+        for amic in amics:
+            if amic.usuariSolicitant_id == perfil.id:
+                user_act = Perfil.objects.get(usuari = amic.usuariDestinatari_id)
+            else:
+                user_act = Perfil.objects.get(usuari = amic.usuariSolicitant_id)
+            amigos.append(user_act.nom + " " + user_act.cognoms)
+            ids.append(user_act.id)
+            ids.reverse()
+            
+        context = {'perfil':perfil, 'publicacions':publicacions, 'nom':nom, 'idPeticio':idPeticio, 'peticions':peticions, 'amigos':amigos, 'ids':ids, 'form':form, 'comentaris':comentaris, 'com':com, 'link':link }
+        return render(request, 'tu.html', context)
 
 #GENERAR PERFIL D'aLTRES
 def veurePerfil(request, idPerfil):
