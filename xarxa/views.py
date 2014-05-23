@@ -10,9 +10,8 @@ from django.db.models import Q
 from xarxa.forms import FormNovaPublicacio, FormNouComentari, BuscaForm
 import datetime
 from django.utils import timezone
-from django.utils import simplejson
-import json
 from django.core import serializers
+import datetime
 
 # Create your views here.
 
@@ -224,11 +223,12 @@ def recerca(request):
     return render(request, 'recerca.html', { 'formCerca': form, 'perfils':perfils })
 
 def perfils(request):
-    cadena = request.GET['cadena']
+    cadena = request.GET.get('cadena','')
+
     #max = request.GET['max'] falta implementar
     nom = Q(nom__contains = cadena)
     cognom = Q(cognoms__contains = cadena)
-    perfils = Perfil.objects.filter(nom | cognom)
+    perfils = Perfil.objects.filter(nom | cognom) if cadena else Perfil.objects.none()
     
     perfilsJson = serializers.serialize('json', perfils)
     

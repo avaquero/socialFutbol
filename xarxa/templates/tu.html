@@ -60,7 +60,7 @@
 					<span class="glyphicon glyphicon-edit"></span> Nova publicació
 				</button>
 			</div>
-			<div class="panel-body">
+			<div class="panel-body" id="cosPublicacio">
 				{% if publicacions %}
 				{% for publicacio in publicacions %}
 				<div class="col-md-12">
@@ -162,7 +162,7 @@
 </div>
 </div>
 
-<div class="modal fade" id="publi" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal f				alert("okey");ade" id="publi" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -180,7 +180,7 @@
 						{{ field.label_tag }} {{ field }}
 					</div>
 					{% endfor %}
-					<input class="form-control btn btn-primary" type="submit" value="Crea" />
+					<button type="submit" class="form-control btn btn-primary" id="novaPub"> Crea </button>
 				</form>
 			</div>
 		</div>
