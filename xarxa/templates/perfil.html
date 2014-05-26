@@ -67,7 +67,7 @@
 						</div>
 						<div class="panel-body">
 							{% if publicacio.imatge %}
-							<p><img class="img-responsive" alt="Imatge publicacio" src="{{ publicacio.imatge.url }}" width="200px" height="200px"/>
+							<a href="{{ publicacio.imatge.url }}"><p><img class="img-responsive" alt="Imatge publicacio" src="{{ publicacio.imatge.url }}" width="200px" height="200px"/></a>
 							</p>
 							{% endif %}
 							<p align="justify">

@@ -9,9 +9,7 @@ from django.core.urlresolvers import reverse
 from django.db.models import Q
 from xarxa.forms import FormNovaPublicacio, FormNouComentari, BuscaForm
 import datetime
-from django.utils import timezone
 from django.core import serializers
-import datetime
 
 # Create your views here.
 
@@ -24,7 +22,7 @@ def generarPerfil(request):
         return HttpResponseRedirect(pagina)
     else:
         perfil = request.user.perfil
-        ## Formulari per crear comentaris
+
         #Crear formulari per comentar publicacions
         if request.method == 'GET':
             com = FormNouComentari(request.GET)
@@ -36,10 +34,11 @@ def generarPerfil(request):
                 pagina = reverse('perfil:tu')
                 return HttpResponseRedirect(pagina)
         else:
-            form = FormNouComentari()
+            com = FormNouComentari()
         
+        com.fields['comentari'].widget.attrs['class'] = 'form-control'
         
-        ## Aqui es crea el formulari per obtenir el modal, amb aquest formulari
+        ## Aqui es crea el formulari per obtenir el modal, amb aquest formulari que crea les publicacions
         if request.method == 'POST':
             form = FormNovaPublicacio(request.POST, request.FILES)
             if form.is_valid():      
@@ -82,16 +81,19 @@ def generarPerfil(request):
                                          Q(usuariSolicitant_id = perfil) | Q(usuariDestinatari_id = perfil),
                                          Q(acceptat=True)
                                          )
-    
+        # Pasar els amics al template
         for amic in amics:
             if amic.usuariSolicitant_id == perfil.id:
                 user_act = Perfil.objects.get(usuari = amic.usuariDestinatari_id)
+                amigos.append(user_act.nom + " " + user_act.cognoms)
+                ids.append(user_act.id)
             else:
                 user_act = Perfil.objects.get(usuari = amic.usuariSolicitant_id)
-            amigos.append(user_act.nom + " " + user_act.cognoms)
-            ids.append(user_act.id)
-            ids.reverse()
-            
+                amigos.append(user_act.nom + " " + user_act.cognoms)
+                ids.append(user_act.id)
+        
+        ids.reverse()    
+
         context = {'perfil':perfil, 'publicacions':publicacions, 'nom':nom, 'idPeticio':idPeticio, 'peticions':peticions, 'amigos':amigos, 'ids':ids, 'form':form, 'comentaris':comentaris, 'com':com, 'link':link }
         return render(request, 'tu.html', context)
 
@@ -146,9 +148,8 @@ def veurePerfil(request, idPerfil):
     else:
         form = FormNouComentari()
     
-    #camps_bootstrap = ('comentari')
-    #for c in camps_bootstrap:
-        #form.fields[c].widget.attrs['class'] = 'form-control'
+
+    form.fields['comentari'].widget.attrs['class'] = 'form-control'
     
     context = {'perfil':perfil, 'publicacions':publicacions, 'amics':amics, 'pendent':pendent, 'comentaris':comentaris, 'form':form, 'linea':linea }
         
@@ -229,10 +230,10 @@ def recerca(request):
         perfils = Perfil.objects.filter(nom__contains= buscat)
     return render(request, 'recerca.html', { 'formCerca': form, 'perfils':perfils })
 
+# Funcio per buscar perfils a la barra
 def perfils(request):
     cadena = request.GET.get('cadena','')
 
-    #max = request.GET['max'] falta implementar
     nom = Q(nom__contains = cadena)
     cognom = Q(cognoms__contains = cadena)
     perfils = Perfil.objects.filter(nom | cognom) if cadena else Perfil.objects.none()

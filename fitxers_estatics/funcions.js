@@ -13,7 +13,6 @@ $(document).ready(function() {
 			dataType: "json",
 			data: {
 				cadena : nom,
-				max : 20,
 			},//fi data
 			success: function(perfils){
 				$("#buscar").append("<ul class='list-group' id='llista'></ul>");
@@ -28,7 +27,7 @@ $(document).ready(function() {
 				});//fi function
 			}, //fi succes
 			error: function(xhr,errmsg,err){
-				$('#prova').append('<p>Error</p>');
+				$('#buscar').append('<p>Error</p>');
 			}
 		});//fi ajax
 		return false;

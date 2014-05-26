@@ -11,10 +11,12 @@
 	{% load bootstrap_tags %}
 	{% for message in messages %}
 	<div class="col-md-3 alert alert-{{ message.tags|bootstrap_tags }} alert-dismissable">
-		<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+		<button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+			&times;
+		</button>
 		{{ message }}
 	</div>
-	
+
 	{% endfor %}
 	{% endif %}
 </div>
@@ -22,7 +24,6 @@
 	<br/>
 	<div class="col-md-3">
 		<div class="panel panel-info">
-			<!-- Default panel contents -->
 			<div class="panel-heading">
 				<span class="glyphicon glyphicon-info-sign"></span> Dades personals
 			</div>
@@ -30,7 +31,7 @@
 				{% if perfil.imatgePerfil %}
 				<img class="img-responsive" alt="Imatge perfil" src="{{ perfil.imatgePerfil.url }}" width="200px" height="200px"/>
 				{% else %}
-				<img class="img-responsive" alt="Imatge perfil" src="{%static "imatges/default.jpg" %}" width="200px" height="200px"/>
+				<img class="img-responsive" alt="Imatge perfil" src="{%static 'imatges/default.jpg' %}" width="200px" height="200px"/>
 				{% endif %}
 				<p></p>
 				<p>
@@ -47,13 +48,11 @@
 				</p>
 
 			</div>
-
 		</div>
 
 	</div>
 	<div class="col-md-6">
 		<div class="panel panel-info">
-			<!-- Default panel contents -->
 			<div class="panel-heading">
 				Publicacions
 				<button class="btn btn-info" data-toggle="modal" data-target="#publi">
@@ -65,7 +64,6 @@
 				{% for publicacio in publicacions %}
 				<div class="col-md-12">
 					<div class="panel panel-primary">
-						<!-- Default panel contents -->
 						<div class="panel-heading">
 							{{ publicacio.dataHora }} <a href="{% url 'perfil:modificar' publicacio.id %}" class="btn btn-info"><span class="glyphicon glyphicon-edit"></span> Edita</a>
 							-- Publicació:
@@ -77,7 +75,8 @@
 						</div>
 						<div class="panel-body">
 							{% if publicacio.imatge %}
-							<p><img class="img-responsive" alt="Imatge publicacio" src="{{ publicacio.imatge.url }}" width="200px" height="200px"/>
+							<p>
+								<a href="{{ publicacio.imatge.url }}"><img class="img-responsive" alt="Imatge publicacio" src="{{ publicacio.imatge.url }}" width="200px" height="200px"/></a>
 							</p>
 							{% endif %}
 							<p align="justify">
@@ -119,7 +118,6 @@
 	<div class="col-md-3">
 		{% if peticions %}
 		<div class="panel panel-info">
-			<!-- Default panel contents -->
 			<div class="panel-heading">
 				Peticions d'amistat
 			</div>
@@ -140,7 +138,6 @@
 		</div>
 		{% endif %}
 		<div class="panel panel-info">
-			<!-- Default panel contents -->
 			<div class="panel-heading">
 				<span class="glyphicon glyphicon-user"></span> Amics
 			</div>
@@ -180,7 +177,9 @@
 						{{ field.label_tag }} {{ field }}
 					</div>
 					{% endfor %}
-					<button type="submit" class="form-control btn btn-primary" id="novaPub"> Crea </button>
+					<button type="submit" class="form-control btn btn-primary" id="novaPub">
+						Crea
+					</button>
 				</form>
 			</div>
 		</div>
