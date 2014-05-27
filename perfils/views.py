@@ -30,6 +30,7 @@ def entrar(request):
                     #Fem login
                     login(request, user)
                     #Si has conseguit fer login aniras a la pagina del teu perfil
+                    messages.success(request, 'Login correcte')
                     tu =reverse('home')
                     next = request.GET.get('next', tu)
                     return HttpResponseRedirect(next)

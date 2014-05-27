@@ -4,6 +4,7 @@
 	<head>
 		<meta charset="utf-8">
 		<link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+		<link href="{% static 'bootstrap/css/mensajes.css' %}" rel="stylesheet">
 		<title>{% block title %} base {% endblock %}</title>
 		<meta http-equiv="Cache-Control" content="no-cache, mustrevalidate">
 		<meta http-equiv="Pragma" content="no-cache">
@@ -12,6 +13,7 @@
 		<script src="{% static 'jquery.js' %}" type="text/javascript"></script>
 		<script src="{% static 'bootstrap/js/bootstrap.js' %}" type="text/javascript"></script>
 		<script src="{% static 'funcions.js' %}" type="text/javascript"></script>
+		
 
 
 		<style>
@@ -123,11 +125,31 @@
 
 		</div>
 
-		<div id="prova">
-			
-		</div>
-
+		<script src="{% static 'bootstrap/js/bootstrap.js' %}"></script>
 		<script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+		<script src="{% static 'bootstrap/js/mensajes.js' %}"></script>
+	
+		{% if messages %}
+		<script>
+			{% load bootstrap_tags %}
+
+			$(document).ready(function() {
+
+				{% for message in messages %}
+				$().toastmessage('showToast', {
+					text : "{{message}}",
+					sticky : false,
+					position : 'top-right',
+					type : "{{message.tags}}",
+				});
+
+				{% endfor %}
+
+			});
+		</script>
+		{% endif %}
+
+		
 
 	</body>
 </html>

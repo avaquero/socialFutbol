@@ -65,7 +65,7 @@ def generarPerfil(request):
         idPeticio = []
         amigos = []
         ids = []
-        
+        fotos = []
         #variable per poder fer link al perfil que et fa la peticio
         link = ""
         
@@ -87,14 +87,17 @@ def generarPerfil(request):
                 user_act = Perfil.objects.get(usuari = amic.usuariDestinatari_id)
                 amigos.append(user_act.nom + " " + user_act.cognoms)
                 ids.append(user_act.id)
+                fotos.append(user_act.imatgePerfil)
             else:
                 user_act = Perfil.objects.get(usuari = amic.usuariSolicitant_id)
                 amigos.append(user_act.nom + " " + user_act.cognoms)
                 ids.append(user_act.id)
+                fotos.append(user_act.imatgePerfil)
         
-        ids.reverse()    
+        ids.reverse()
+        fotos.reverse()   
 
-        context = {'perfil':perfil, 'publicacions':publicacions, 'nom':nom, 'idPeticio':idPeticio, 'peticions':peticions, 'amigos':amigos, 'ids':ids, 'form':form, 'comentaris':comentaris, 'com':com, 'link':link }
+        context = {'perfil':perfil, 'publicacions':publicacions, 'nom':nom, 'idPeticio':idPeticio, 'peticions':peticions, 'amigos':amigos, 'ids':ids, 'form':form, 'comentaris':comentaris, 'com':com, 'link':link, 'fotos':fotos }
         return render(request, 'tu.html', context)
 
 #GENERAR PERFIL D'aLTRES
@@ -128,11 +131,13 @@ def veurePerfil(request, idPerfil):
                     pendent= True
                 linea = x.id  
     
-    #A partir d'aqui si no som amics no mostro les publis privades, i si la solicitud es pendent tampoco mostro les privades
-    if not amics:
-        publicacions = publicacions.exclude( privat = True )
-    
-    if pendent == True:
+        #A partir d'aqui si no som amics no mostro les publis privades, i si la solicitud es pendent tampoco mostro les privades
+        if not amics:
+            publicacions = publicacions.exclude( privat = True )
+        
+        if pendent == True:
+            publicacions = publicacions.exclude( privat = True )
+    else:
         publicacions = publicacions.exclude( privat = True )
         
     #Crear formulari per comentar publicacions
@@ -151,8 +156,8 @@ def veurePerfil(request, idPerfil):
 
     form.fields['comentari'].widget.attrs['class'] = 'form-control'
     
-    context = {'perfil':perfil, 'publicacions':publicacions, 'amics':amics, 'pendent':pendent, 'comentaris':comentaris, 'form':form, 'linea':linea }
-        
+    context = {'perfil':perfil, 'publicacions':publicacions, 'amics':amics, 'pendent':pendent, 'comentaris':comentaris, 'form':form, 'linea':linea, 'idPerfil':idPerfil }
+
     return render(request, 'perfil.html', context)
 
 #FER PETICIO D'AMISTAT
@@ -178,6 +183,8 @@ def acceptarAmic(request, idLinea):
                              Q(usuariSolicitant_id = request.user.perfil.id) | Q(usuariDestinatari_id = request.user.perfil.id),
                              Q(id = idLinea)
                              ).update(acceptat=True)
+                             
+    messages.success(request, "Amic acceptat")
     pagina = reverse('perfil:tu')
     return HttpResponseRedirect(pagina)
 
@@ -188,6 +195,7 @@ def eliminarSolicitud(request, idLinea):
                              Q(id = idLinea)
                              ).delete()
     
+    messages.success(request, "Solicitud denegada")
     pagina = reverse('perfil:tu')
     return HttpResponseRedirect(pagina)
 
@@ -212,6 +220,15 @@ def modificaPublicacio(request, idPublicacio):
         form.fields[c].widget.attrs['class'] = 'form-control'
     return render(request, 'modificarPublicacio.html', {'form':form,})
 
+@login_required
+def eliminaPublicacio(request, idPublicacio):
+    perfil = request.user.perfil
+    Publicacio.objects.filter(pk = idPublicacio, usuari = perfil).delete()
+    
+    messages.success(request, "Publicació eliminada")
+    pagina = reverse('perfil:tu')
+    return HttpResponseRedirect(pagina)
+
 def recerca(request):
     if request.method == 'POST':
         form = BuscaForm(request.POST)
@@ -221,7 +238,7 @@ def recerca(request):
             url_next = reverse('recerca')
             return HttpResponseRedirect( url_next + "?q=" + buscat)
         else:
-            messages.error(request, "Ep! Busqueda no vàlida")
+            messages.error(request, "No has introduit res a la cerca")
             return HttpResponseRedirect('/')
         
     else:    
@@ -241,5 +258,49 @@ def perfils(request):
     perfilsJson = serializers.serialize('json', perfils)
     
     return HttpResponse(perfilsJson, content_type="application/json")
-              
+
+def perfilAltreAjax(request):
     
+    numPub = request.GET['max']
+    idPerfil = request.GET['idPerfil']
+    perfil = get_object_or_404(Perfil, pk=idPerfil)
+    
+    
+    publicacions = Publicacio.objects.filter(usuari = perfil).order_by('-dataHora')[:2]
+
+    comentaris = Comentari.objects.all()
+    
+    amics = False
+    pendent = False
+    
+    #Comprovo que l'usuari si esta autenticat si es aixi, miro si soc amic del perfil que visito
+    if request.user.is_authenticated():
+        yo = request.user.perfil
+        amics = Solicitud.objects.filter(
+                                         Q(usuariSolicitant_id = idPerfil) | Q(usuariDestinatari_id = idPerfil),
+                                         Q(usuariSolicitant_id = yo.id) | Q(usuariDestinatari_id = yo.id)
+                                         ).exists()
+        #si existeix un registre miro si som amics, o esta pendent la solicitud
+        if amics:
+            mirarPendent = Solicitud.objects.filter(
+                                         Q(usuariSolicitant_id = idPerfil) | Q(usuariDestinatari_id = idPerfil),
+                                         Q(usuariSolicitant_id = yo.id) | Q(usuariDestinatari_id = yo.id)
+                                         )
+            for x in mirarPendent:
+                if x.acceptat:
+                    pendent = False
+                else:
+                    pendent= True
+    
+        #A partir d'aqui si no som amics no mostro les publis privades, i si la solicitud es pendent tampoco mostro les privades
+        if not amics:
+            publicacions = publicacions.exclude( privat = True )
+        
+        if pendent == True:
+            publicacions = publicacions.exclude( privat = True )
+    else:
+        publicacions = publicacions.exclude( privat = True )
+        
+    publicacionsJson = serializers.serialize('json', publicacions)
+    
+    return HttpResponse(publicacionsJson, content_type="application/json")

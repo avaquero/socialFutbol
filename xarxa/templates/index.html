@@ -16,7 +16,7 @@
 
 	</div>
 	<div class="col-md-8">
-		<div class="panel panel-info scroll">
+		<div class="panel panel-info">
 			<div class="panel-heading">
 				Publicacions globals dels teus amics
 			</div>
@@ -105,15 +105,5 @@
 	</p>
 	<a href="{% url 'accedir:registrarse' %}" class="btn btn-primary">Registrar-se</a>
 </div>
-
-{% if messages %}
-
-{% load bootstrap_tags %}
-{% for message in messages %}
-<div class="col-md-3 alert alert-{{ message.tags|bootstrap_tags }}">
-	{{ message }}
-</div>
-{% endfor %}
-{% endif %}
 {% endif %}
 {% endblock %}

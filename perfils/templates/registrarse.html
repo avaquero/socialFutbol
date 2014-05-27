@@ -60,15 +60,6 @@
 	</form>
   </div>
 </div>
-	{% if messages %}
-	
-	{% load bootstrap_tags %}
-	{% for message in messages %}
-	<div class="col-md-3 alert alert-{{ message.tags|bootstrap_tags }}">
-		{{ message }}
-	</div>
-	{% endfor %}
-	{% endif %}
 	
 </div>
 

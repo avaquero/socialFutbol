@@ -42,12 +42,13 @@ def home(request):
                                 
             publicacio = Publicacio.objects.filter(usuari_id = user_act).exists()
             if publicacio:
-                publicacio = Publicacio.objects.filter(usuari_id = user_act).order_by('-dataHora')
+                publicacio = Publicacio.objects.filter(usuari_id = user_act).order_by('-dataHora')[:2]
                 publicacions.append(publicacio)
-                comentari = Comentari.objects.filter(publicacio_id = publicacio).exists()
-                if comentari:
-                    comentari = Comentari.objects.filter(publicacio_id = publicacio)
-                    comentaris.append(comentari)
+                for publi in publicacio:
+                    comentari = Comentari.objects.filter(publicacio_id = publi).exists()
+                    if comentari:
+                        comentari = Comentari.objects.filter(publicacio_id = publi)
+                        comentaris.append(comentari)
         
         
         context = {'publicacions':publicacions, 'comentaris':comentaris, 'perfil':yo, 'com':com}

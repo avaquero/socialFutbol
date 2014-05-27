@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load staticfiles %}
 
-{% block  title %} Tu - Social-Football {% endblock %}
+{% block  title %} {{ perfil.nom }} {{ perfil.cognoms }} - Social-Football {% endblock %}
 
 {% block content %}
 
@@ -38,7 +38,7 @@
 				<span class="label label-default">Solicitud pendent</span>
 				{% endif %}
 				{% if amics %}
-				<a href="{% url 'perfil:eliminar' linea %}" class="btn btn-danger">Eliminar</a>
+				<a href="{% url 'perfil:eliminarAmic' linea %}" class="btn btn-danger">Eliminar</a>
 				{% else %}
 				<a href="{% url 'perfil:nouAmic' perfil.id %}" class="btn btn-success">Afegir com amic</a>
 				{% endif %}
@@ -46,7 +46,8 @@
 			</div>
 
 		</div>
-
+	<input type="hidden" id="idPerf" value="{{ idPerfil }}" />
+	<input type="hidden" id="idMax" value="5" />
 	</div>
 
 	<div class="col-md-6">
@@ -55,7 +56,7 @@
 			<div class="panel-heading">
 				Publicacions
 			</div>
-			<div class="panel-body">
+			<div class="panel-body" id="publicacions">
 				{% if publicacions %}
 				{% for publicacio in publicacions %}
 				

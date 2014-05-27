@@ -6,21 +6,6 @@
 {% block content %}
 
 <div class="row">
-	{% if messages %}
-
-	{% load bootstrap_tags %}
-	{% for message in messages %}
-	<div class="col-md-3 alert alert-{{ message.tags|bootstrap_tags }} alert-dismissable">
-		<button type="button" class="close" data-dismiss="alert" aria-hidden="true">
-			&times;
-		</button>
-		{{ message }}
-	</div>
-
-	{% endfor %}
-	{% endif %}
-</div>
-<div class="row">
 	<br/>
 	<div class="col-md-3">
 		<div class="panel panel-info">
@@ -31,7 +16,7 @@
 				{% if perfil.imatgePerfil %}
 				<img class="img-responsive" alt="Imatge perfil" src="{{ perfil.imatgePerfil.url }}" width="200px" height="200px"/>
 				{% else %}
-				<img class="img-responsive" alt="Imatge perfil" src="{%static 'imatges/default.jpg' %}" width="200px" height="200px"/>
+				<img class="img-responsive" alt="Imatge perfil" src="{% static 'imatges/default.jpg' %}" width="200px" height="200px"/>
 				{% endif %}
 				<p></p>
 				<p>
@@ -66,12 +51,13 @@
 					<div class="panel panel-primary">
 						<div class="panel-heading">
 							{{ publicacio.dataHora }} <a href="{% url 'perfil:modificar' publicacio.id %}" class="btn btn-info"><span class="glyphicon glyphicon-edit"></span> Edita</a>
-							-- Publicació:
+							--
 							{% if publicacio.privat == True%}
-							Privada
+							Privada  
 							{% else %}
-							Pública
+							Pública  
 							{% endif %}
+							<a href="{% url 'perfil:eliminar' publicacio.id %}" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
 						</div>
 						<div class="panel-body">
 							{% if publicacio.imatge %}
@@ -142,12 +128,24 @@
 				<span class="glyphicon glyphicon-user"></span> Amics
 			</div>
 			<div class="panel-body">
+				<table>
 				{% if amigos %}
 				{% for amic in amigos %}
-				<p>
-					<a href="{% url 'perfil:perfilAjeno' ids.pop %}">{{ amic }}</a>
-				</p>
+				{% with foto=fotos.pop %}
+				{% if foto %}
+				<tr>
+					<td><img class="img-responsive" width="50px" height="50px" src="/media/{{ foto }}" /></td>
+					<td><a href="{% url 'perfil:perfilAjeno' ids.pop %}">{{ amic }}</a></td>	
+				</tr>
+				{% else %}
+				<tr>
+					<td><img class="img-responsive" width="50px" height="50px" src="{% static 'imatges/default.jpg' %}" /></td>
+					<td><a href="{% url 'perfil:perfilAjeno' ids.pop %}">{{ amic }}</a></td>	
+				</tr>
+				{% endif %}
+				{% endwith %}
 				{% endfor %}
+				</table>
 				{% else %}
 				<p>
 					Encara no tens amics
