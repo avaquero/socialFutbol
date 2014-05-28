@@ -104,7 +104,7 @@ def generarPerfil(request):
 def veurePerfil(request, idPerfil):
     perfil = get_object_or_404(Perfil, pk=idPerfil)
     
-    publicacions = Publicacio.objects.filter(usuari = perfil).order_by('-dataHora')
+    publicacions = Publicacio.objects.filter(usuari = idPerfil).order_by('-dataHora')[:5]
     comentaris = Comentari.objects.all()
     
     amics = False
@@ -132,13 +132,15 @@ def veurePerfil(request, idPerfil):
                 linea = x.id  
     
         #A partir d'aqui si no som amics no mostro les publis privades, i si la solicitud es pendent tampoco mostro les privades
-        if not amics:
-            publicacions = publicacions.exclude( privat = True )
+        else:
+            publicacions = Publicacio.objects.filter(usuari = idPerfil).order_by('-dataHora').exclude(privat = True)[:5]
         
         if pendent == True:
-            publicacions = publicacions.exclude( privat = True )
+            publicacions = Publicacio.objects.filter(usuari = idPerfil).order_by('-dataHora').exclude(privat = True)[:5]
+
     else:
-        publicacions = publicacions.exclude( privat = True )
+        publicacions = Publicacio.objects.filter(usuari = idPerfil).order_by('-dataHora').exclude(privat = True)[:5]
+
         
     #Crear formulari per comentar publicacions
     if request.method == 'GET':
@@ -266,7 +268,7 @@ def perfilAltreAjax(request):
     perfil = get_object_or_404(Perfil, pk=idPerfil)
     
     
-    publicacions = Publicacio.objects.filter(usuari = perfil).order_by('-dataHora')[:2]
+    publicacions = Publicacio.objects.filter(usuari = perfil).order_by('-dataHora')[:numPub]
 
     comentaris = Comentari.objects.all()
     
@@ -293,14 +295,15 @@ def perfilAltreAjax(request):
                     pendent= True
     
         #A partir d'aqui si no som amics no mostro les publis privades, i si la solicitud es pendent tampoco mostro les privades
-        if not amics:
-            publicacions = publicacions.exclude( privat = True )
+        else:
+            publicacions = Publicacio.objects.filter(usuari = idPerfil).order_by('-dataHora').exclude(privat = True)[:numPub]
         
         if pendent == True:
-            publicacions = publicacions.exclude( privat = True )
+            publicacions = Publicacio.objects.filter(usuari = idPerfil).order_by('-dataHora').exclude(privat = True)[:numPub]
     else:
-        publicacions = publicacions.exclude( privat = True )
+        publicacions = Publicacio.objects.filter(usuari = idPerfil).order_by('-dataHora').exclude(privat = True)[:numPub]
         
     publicacionsJson = serializers.serialize('json', publicacions)
+    #comentarisJson = serializers.serialize('json', comentaris)
     
     return HttpResponse(publicacionsJson, content_type="application/json")

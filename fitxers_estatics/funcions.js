@@ -38,7 +38,7 @@ $(document).ready(function() {
 
 	$(window).scroll(function() {
 		if ($(window).scrollTop() == $(document).height() - $(window).height()) {
-			$('#publicacions').empty();
+			
 			var perfil = document.getElementById('idPerf').value;
 			var idMax = document.getElementById('idMax').value;
 			var domini = "http://127.0.0.1:8000";
@@ -50,16 +50,30 @@ $(document).ready(function() {
 					max : idMax,
 					idPerfil : perfil,
 				}, //fi data
-				success : function(publicacions) {
-					$.each(publicacions, function() {
+				success : function(publicacion) {
+					$('#publicacions').empty();
+					$.each(publicacion, function() {
 						var id = this['pk'];
 						var dataHora = this['fields']['dataHora'];
 						var text = this['fields']['text'];
 						var privat = this['fields']['privat'];
 
-						$('#publicacions').append('<div class="panel panel-primary">' + '<div class="panel-heading">' + dataHora + '</div>' + '<div class="panel-body">' + text + '</div>' + '</div>');
+						$('#publicacions').append(
+						'<div class="col-md-12">' +
+						'<div class="panel panel-primary">' + 
+						'<div class="panel-heading">' + dataHora + '</div>' + 
+						'<div class="panel-body">' + text + 
+						'</div>' + 
+						'<div class="panel-footer">' +
+						'<button class="btn btn-info" onclick="Comentar(' + id + ')" data-target="#coment" data-toggle="modal">' +
+						'<span class="glyphicon glyphicon-edit"></span> Comenta</button><br/><br/>' +
+						'</div>' +
+						'</div>' +
+						'</div>'
+						);
 
 					});
+					document.getElementById('idMax').value = eval(idMax) + 5;
 					//fi function
 				}, //fi succes
 				error : function(xhr, errmsg, err) {
