@@ -311,3 +311,9 @@ def comentarisAjax(request):
     comentarisJson = serializers.serialize('json', comentaris )
   
     return HttpResponse(comentarisJson, content_type="application/json")
+
+def perfilAjax(request):
+    perfils = Perfil.objects.all()
+    perfilsJson = serializers.serialize('json', perfils )
+  
+    return HttpResponse(perfilsJson, content_type="application/json")
