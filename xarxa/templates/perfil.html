@@ -4,7 +4,11 @@
 {% block  title %} {{ perfil.nom }} {{ perfil.cognoms }} - Social-Football {% endblock %}
 
 {% block content %}
-
+{% if user.is_authenticated %}
+<input type="hidden" value="1" id="login" />
+{% else %}
+<input type="hidden" value="0" id="login" />
+{% endif %}
 <div class="row">
 	<br/>
 	<div class="col-md-3">

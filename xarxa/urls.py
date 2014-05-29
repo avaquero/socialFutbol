@@ -11,5 +11,6 @@ urlpatterns = patterns('',
     url(r'^eliminaPub/(?P<idPublicacio>\d+)$', views.eliminaPublicacio, name='eliminar'),
     url(r'^buscar$', views.perfils, name='perfil'),
     url(r'^perfilAjax$', views.perfilAltreAjax, name='perfilAjax'),
+    url(r'^comentarisAjax$', views.comentarisAjax, name='comentarisAjax'),
     #url(r'^logout$', views.sortir, name='logout'),
 )

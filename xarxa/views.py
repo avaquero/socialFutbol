@@ -269,8 +269,6 @@ def perfilAltreAjax(request):
     
     
     publicacions = Publicacio.objects.filter(usuari = perfil).order_by('-dataHora')[:numPub]
-
-    comentaris = Comentari.objects.all()
     
     amics = False
     pendent = False
@@ -302,8 +300,14 @@ def perfilAltreAjax(request):
             publicacions = Publicacio.objects.filter(usuari = idPerfil).order_by('-dataHora').exclude(privat = True)[:numPub]
     else:
         publicacions = Publicacio.objects.filter(usuari = idPerfil).order_by('-dataHora').exclude(privat = True)[:numPub]
-        
-    publicacionsJson = serializers.serialize('json', publicacions)
-    #comentarisJson = serializers.serialize('json', comentaris)
     
+    
+    publicacionsJson = serializers.serialize('json', publicacions )
+  
     return HttpResponse(publicacionsJson, content_type="application/json")
+
+def comentarisAjax(request):
+    comentaris = Comentari.objects.all()
+    comentarisJson = serializers.serialize('json', comentaris )
+  
+    return HttpResponse(comentarisJson, content_type="application/json")
