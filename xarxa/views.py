@@ -10,6 +10,7 @@ from django.db.models import Q
 from xarxa.forms import FormNovaPublicacio, FormNouComentari, BuscaForm
 import datetime
 from django.core import serializers
+from django.utils import formats
 
 # Create your views here.
 
@@ -301,6 +302,7 @@ def perfilAltreAjax(request):
     else:
         publicacions = Publicacio.objects.filter(usuari = idPerfil).order_by('-dataHora').exclude(privat = True)[:numPub]
     
+       
     
     publicacionsJson = serializers.serialize('json', publicacions )
   

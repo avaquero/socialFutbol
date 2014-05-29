@@ -44,6 +44,7 @@ $(document).ready(function() {
 			var perf;
 			//perfils pasats ajax
 			var domini = "http://127.0.0.1:8000";
+			var mesos = ['gener', 'febrer', 'març', 'abril', 'maig', 'juny', 'juliol', 'agost', 'setembre', 'octubre', 'novembre', 'desembre'];
 
 			//començar perfils
 
@@ -93,14 +94,18 @@ $(document).ready(function() {
 					$('#publicacions').empty();
 					$.each(publicacion, function() {
 						var id = this['pk'];
-						var dataHora = this['fields']['dataHora'];
+						var d = this['fields']['dataHora'];
 						var text = this['fields']['text'];
 						var usuari = this['fields']['usuari'];
+						var dataHora = new Date(d);
+						//alert(dataHora);
+
+						var dh = dataHora.getDate() + ' de ' + mesos[dataHora.getMonth()] + ' de ' + dataHora.getFullYear() + ' a les ' + dataHora.getHours() + ":" + dataHora.getMinutes();
 
 						if (login == 1) {
-							$('#publicacions').append('<div class="col-md-12">' + '<div class="panel panel-primary">' + '<div class="panel-heading">' + dataHora + '</div>' + '<div class="panel-body">' + text + '</div>' + '<div class="panel-footer" id="pub' + id + '">' + '<button class="btn btn-info" onclick="Comentar(' + id + ')" data-target="#coment" data-toggle="modal">' + '<span class="glyphicon glyphicon-edit"></span> Comenta</button><br/><br/>' + '</div>' + '</div>' + '</div>');
+							$('#publicacions').append('<div class="col-md-12">' + '<div class="panel panel-primary">' + '<div class="panel-heading">' + dh + '</div>' + '<div class="panel-body">' + text + '</div>' + '<div class="panel-footer" id="pub' + id + '">' + '<button class="btn btn-info" onclick="Comentar(' + id + ')" data-target="#coment" data-toggle="modal">' + '<span class="glyphicon glyphicon-edit"></span> Comenta</button><br/><br/>' + '</div>' + '</div>' + '</div>');
 						} else {
-							$('#publicacions').append('<div class="col-md-12">' + '<div class="panel panel-primary">' + '<div class="panel-heading">' + dataHora + '</div>' + '<div class="panel-body">' + text + '</div>' + '<div class="panel-footer" id="pub' + id + '">' + '</div>' + '</div>');
+							$('#publicacions').append('<div class="col-md-12">' + '<div class="panel panel-primary">' + '<div class="panel-heading">' + dh + '</div>' + '<div class="panel-body">' + text + '</div>' + '<div class="panel-footer" id="pub' + id + '">' + '</div>' + '</div>');
 						}
 
 						$.each(com, function() {
@@ -109,6 +114,8 @@ $(document).ready(function() {
 							var pub = this['fields']['publicacio'];
 							var user = this['fields']['usuari'];
 							var hora = this['fields']['dataHora'];
+							var dataHora = new Date(hora);
+							var dh = dataHora.getDate() + ' de ' + mesos[dataHora.getMonth()] + ' de ' + dataHora.getFullYear() + ' a les ' + dataHora.getHours() + ":" + dataHora.getMinutes();
 
 							if (pub == id) {
 								$.each(perf, function() {
@@ -118,7 +125,7 @@ $(document).ready(function() {
 									var perfil = this['pk'];
 
 									if (perfil == user) {
-										$('#pub' + pub).append('<div class="panel panel-success">' + '<div class="panel-heading"><a href="/perfil/' + user + '"> ' + nom + ' ' + cognoms + '</a> - ' + hora + '</div>' + '<div class="panel-body">' + '<p aling="justify">' + comentari + '</p>' + '</div>' + '</div>');
+										$('#pub' + pub).append('<div class="panel panel-success">' + '<div class="panel-heading"><a href="/perfil/' + user + '"> ' + nom + ' ' + cognoms + '</a> - ' + dh + '</div>' + '<div class="panel-body">' + '<p aling="justify">' + comentari + '</p>' + '</div>' + '</div>');
 									}
 								});
 								//per
