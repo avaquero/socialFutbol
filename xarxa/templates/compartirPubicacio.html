@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block  title %} Publicacio - Social-Football {% endblock %}
+
+{% block content %}
+<br>
+<div class="row">
+	<div class="col-md-2"></div>
+	<div class="col-md-8">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				{{ publicacio.usuari.nom }} {{ publicacio.usuari.cognoms }} -- {{ publicacio.dataHora }}
+			</div>
+			<div class="panel-body">
+				{% if publicacio.imatge %}
+				<p>
+					<a href="{{ publicacio.imatge.url }}">
+					<p><img class="img-responsive" alt="Imatge publicacio" src="{{ publicacio.imatge.url }}" width="200px" height="200px"/>
+					</a>
+				</p>
+				{% endif %}
+				<p align="justify">
+					{{ publicacio.text }}
+				</p>
+			</div>
+			<div class="panel-footer">
+				<button class="btn btn-info" data-toggle="modal" data-target="#coment" onclick="Comentar({{publicacio.id}})">
+					<span class="glyphicon glyphicon-edit"></span> Comenta
+				</button>
+				<br/>
+				<br/>
+				{% for comentari in comentaris %}
+				{% if publicacio == comentari.publicacio %}
+				<div class="panel panel-success">
+					<div class="panel-heading">
+						<a href="{% url 'perfil:perfilAjeno' comentari.usuari.id %}">{{ comentari.usuari.nom }} {{ comentari.usuari.cognoms }}</a> - {{ comentari.dataHora }}
+					</div>
+					<div class="panel-body">
+						<p align="justify">
+							{{ comentari.comentari }}
+						</p>
+					</div>
+				</div>
+				{% endif %}
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+	<div class="col-md-2"></div>
+</div>
+
+<div class="modal fade" id="coment" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+					&times;
+				</button>
+				<h4 class="modal-title" id="myModalLabel">Nou comentari</h4>
+			</div>
+			<div class="modal-body">
+				<form action="" method="get" class="form-signin" enctype="multipart/form-data" role="form" tipus="publicacio" >
+					{% csrf_token %}
+					{% for field in form.visible_fields %}
+					<div class="form-group">
+						{{ field }}
+					</div>
+					{% endfor %}
+					<input type="hidden" id="publicacio" name="publicacio" value=""/>
+					<input class="form-control btn btn-primary" type="submit" value="Comenta" />
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}

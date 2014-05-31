@@ -10,11 +10,10 @@ from django.db.models import Q
 from xarxa.forms import FormNovaPublicacio, FormNouComentari, BuscaForm
 import datetime
 from django.core import serializers
-from django.utils import formats
 
 # Create your views here.
 
-#GENERAR EL TEU PERFIL
+#GENERAR EL MEU PERFIL
 def generarPerfil(request):
     
     if not request.user.is_authenticated():
@@ -60,7 +59,7 @@ def generarPerfil(request):
             form.fields[c].widget.attrs['class'] = 'form-control'
         
         comentaris = Comentari.objects.all()
-        publicacions = Publicacio.objects.filter(usuari = perfil).order_by('-dataHora')
+        publicacions = Publicacio.objects.filter(usuari = perfil).order_by('-dataHora')[:5]
         peticions = Solicitud.objects.filter(usuariDestinatari = perfil, acceptat = 0)
         nom = []
         idPeticio = []
@@ -103,65 +102,70 @@ def generarPerfil(request):
 
 #GENERAR PERFIL D'aLTRES
 def veurePerfil(request, idPerfil):
-    perfil = get_object_or_404(Perfil, pk=idPerfil)
+    if request.user.is_authenticated() and int(idPerfil) == request.user.perfil.id:
+        pagina = reverse('perfil:tu')
+        return HttpResponseRedirect(pagina)
+
+    else:
+        perfil = get_object_or_404(Perfil, pk=idPerfil)
+        
+        publicacions = Publicacio.objects.filter(usuari = idPerfil).order_by('-dataHora')[:5]
+        comentaris = Comentari.objects.all()
+        
+        amics = False
+        pendent = False
+        linea = ""
+        
+        #Comprovo que l'usuari si esta autenticat si es aixi, miro si soc amic del perfil que visito
+        if request.user.is_authenticated():
+            yo = request.user.perfil
+            amics = Solicitud.objects.filter(
+                                             Q(usuariSolicitant_id = idPerfil) | Q(usuariDestinatari_id = idPerfil),
+                                             Q(usuariSolicitant_id = yo.id) | Q(usuariDestinatari_id = yo.id)
+                                             ).exists()
+            #si existeix un registre miro si som amics, o esta pendent la solicitud
+            if amics:
+                mirarPendent = Solicitud.objects.filter(
+                                             Q(usuariSolicitant_id = idPerfil) | Q(usuariDestinatari_id = idPerfil),
+                                             Q(usuariSolicitant_id = yo.id) | Q(usuariDestinatari_id = yo.id)
+                                             )
+                for x in mirarPendent:
+                    if x.acceptat:
+                        pendent = False
+                    else:
+                        pendent= True
+                    linea = x.id  
+        
+            #A partir d'aqui si no som amics no mostro les publis privades, i si la solicitud es pendent tampoco mostro les privades
+            else:
+                publicacions = Publicacio.objects.filter(usuari = idPerfil).order_by('-dataHora').exclude(privat = True)[:5]
+            
+            if pendent == True:
+                publicacions = Publicacio.objects.filter(usuari = idPerfil).order_by('-dataHora').exclude(privat = True)[:5]
     
-    publicacions = Publicacio.objects.filter(usuari = idPerfil).order_by('-dataHora')[:5]
-    comentaris = Comentari.objects.all()
-    
-    amics = False
-    pendent = False
-    linea = ""
-    
-    #Comprovo que l'usuari si esta autenticat si es aixi, miro si soc amic del perfil que visito
-    if request.user.is_authenticated():
-        yo = request.user.perfil
-        amics = Solicitud.objects.filter(
-                                         Q(usuariSolicitant_id = idPerfil) | Q(usuariDestinatari_id = idPerfil),
-                                         Q(usuariSolicitant_id = yo.id) | Q(usuariDestinatari_id = yo.id)
-                                         ).exists()
-        #si existeix un registre miro si som amics, o esta pendent la solicitud
-        if amics:
-            mirarPendent = Solicitud.objects.filter(
-                                         Q(usuariSolicitant_id = idPerfil) | Q(usuariDestinatari_id = idPerfil),
-                                         Q(usuariSolicitant_id = yo.id) | Q(usuariDestinatari_id = yo.id)
-                                         )
-            for x in mirarPendent:
-                if x.acceptat:
-                    pendent = False
-                else:
-                    pendent= True
-                linea = x.id  
-    
-        #A partir d'aqui si no som amics no mostro les publis privades, i si la solicitud es pendent tampoco mostro les privades
         else:
             publicacions = Publicacio.objects.filter(usuari = idPerfil).order_by('-dataHora').exclude(privat = True)[:5]
-        
-        if pendent == True:
-            publicacions = Publicacio.objects.filter(usuari = idPerfil).order_by('-dataHora').exclude(privat = True)[:5]
-
-    else:
-        publicacions = Publicacio.objects.filter(usuari = idPerfil).order_by('-dataHora').exclude(privat = True)[:5]
-
-        
-    #Crear formulari per comentar publicacions
-    if request.method == 'GET':
-        form = FormNouComentari(request.GET)
-        if form.is_valid():      
-            comentari=form.save(commit=False)
-            comentari.publicacio_id = request.GET['publicacio']
-            comentari.usuari = request.user.perfil
-            comentari.save()
-            pagina = reverse('perfil:perfilAjeno', kwargs={'idPerfil':idPerfil})
-            return HttpResponseRedirect(pagina)
-    else:
-        form = FormNouComentari()
     
-
-    form.fields['comentari'].widget.attrs['class'] = 'form-control'
+            
+        #Crear formulari per comentar publicacions
+        if request.method == 'GET':
+            form = FormNouComentari(request.GET)
+            if form.is_valid():      
+                comentari=form.save(commit=False)
+                comentari.publicacio_id = request.GET['publicacio']
+                comentari.usuari = request.user.perfil
+                comentari.save()
+                pagina = reverse('perfil:perfilAjeno', kwargs={'idPerfil':idPerfil})
+                return HttpResponseRedirect(pagina)
+        else:
+            form = FormNouComentari()
+        
     
-    context = {'perfil':perfil, 'publicacions':publicacions, 'amics':amics, 'pendent':pendent, 'comentaris':comentaris, 'form':form, 'linea':linea, 'idPerfil':idPerfil }
-
-    return render(request, 'perfil.html', context)
+        form.fields['comentari'].widget.attrs['class'] = 'form-control'
+        
+        context = {'perfil':perfil, 'publicacions':publicacions, 'amics':amics, 'pendent':pendent, 'comentaris':comentaris, 'form':form, 'linea':linea, 'idPerfil':idPerfil }
+    
+        return render(request, 'perfil.html', context)
 
 #FER PETICIO D'AMISTAT
 @login_required
@@ -319,3 +323,36 @@ def perfilAjax(request):
     perfilsJson = serializers.serialize('json', perfils )
   
     return HttpResponse(perfilsJson, content_type="application/json")
+
+@login_required
+def perfilTuAjax(request):
+    numPub = request.GET['max']
+    perfil = request.user.perfil
+    
+    publicacions = Publicacio.objects.filter(usuari = perfil).order_by('-dataHora')[:numPub]
+    
+    publicacionsJson = serializers.serialize('json', publicacions )
+  
+    return HttpResponse(publicacionsJson, content_type="application/json")
+
+def compartirPub(request, idPub):
+    publicacio = get_object_or_404(Publicacio, pk = idPub)
+    comentaris = Comentari.objects.all()
+    if request.method == 'GET':
+        form = FormNouComentari(request.GET)
+        if form.is_valid():      
+            comentari=form.save(commit=False)
+            comentari.publicacio_id = request.GET['publicacio']
+            comentari.usuari = request.user.perfil
+            comentari.save()
+            pagina = reverse('perfil:compartirPub', kwargs={'idPub':idPub})
+            return HttpResponseRedirect(pagina)
+    else:
+        form = FormNouComentari()
+        
+    
+    form.fields['comentari'].widget.attrs['class'] = 'form-control'
+    context = {'publicacio':publicacio, 'comentaris':comentaris, 'form':form}
+    return render(request, 'compartirPubicacio.html', context)
+    
+    

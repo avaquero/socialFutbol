@@ -21,8 +21,13 @@ $(document).ready(function() {
 					var id = this['pk'];
 					var nom = this['fields']['nom'];
 					var cognoms = this['fields']['cognoms'];
+					var imatge = this['fields']['imatgePerfil'];
 
-					$('#llista').append("<a href='" + domini + "/perfil/" + id + "' class='list-group-item'>" + nom + " " + cognoms + "</a>");
+					if (imatge) {
+						$('#llista').append("<a href='" + domini + "/perfil/" + id + "' class='list-group-item'>" + "<img src='/media/" + imatge + "' width='50px' height='50px' class='img-responsive' alt='Imatge perfil' />" + nom + " " + cognoms + "</a>");
+					} else {
+						$('#llista').append("<a href='" + domini + "/perfil/" + id + "' class='list-group-item'>" + "<img src='/static/imatges/default.jpg' width='50px' height='50px' class='img-responsive' alt='Imatge perfil' />" + nom + " " + cognoms + "</a>");
+					}
 
 				});
 				//fi function
@@ -35,120 +40,6 @@ $(document).ready(function() {
 		return false;
 	});
 	//fi idbusca
-
-	$(window).scroll(function() {
-		if ($(window).scrollTop() == $(document).height() - $(window).height()) {
-
-			var com;
-			//comentaris pasats ajax
-			var perf;
-			//perfils pasats ajax
-			var domini = "http://127.0.0.1:8000";
-			var mesos = ['gener', 'febrer', 'març', 'abril', 'maig', 'juny', 'juliol', 'agost', 'setembre', 'octubre', 'novembre', 'desembre'];
-
-			//començar perfils
-
-			$.ajax({
-				url : domini + "/perfil/comentarisPerfil",
-				dataType : "json",
-				success : function(perfils) {
-					perf = perfils;
-					//fi function
-				}, //fi succes
-				error : function(xhr, errmsg, err) {
-					$('#publicacions').append('<p>Error del servidor</p>');
-				}
-			});
-			//fi ajax
-
-			//finalitza perfils
-
-			//començar comentaris
-			$.ajax({
-				url : domini + "/perfil/comentarisAjax",
-				dataType : "json",
-				success : function(comentaris) {
-					com = comentaris;
-					//fi function
-				}, //fi succes
-				error : function(xhr, errmsg, err) {
-					$('#publicacions').append('<p>Error del servidor</p>');
-				}
-			});
-			//fi ajax
-			//finalitza comntaris
-
-			var perfil = document.getElementById('idPerf').value;
-			var idMax = document.getElementById('idMax').value;
-			var login = document.getElementById('login').value;
-
-			$.ajax({
-				url : domini + "/perfil/perfilAltreAjax",
-				type : "GET",
-				dataType : "json",
-				data : {
-					max : idMax,
-					idPerfil : perfil,
-				}, //fi data
-				success : function(publicacion) {
-					$('#publicacions').empty();
-					$.each(publicacion, function() {
-						var id = this['pk'];
-						var d = this['fields']['dataHora'];
-						var text = this['fields']['text'];
-						var usuari = this['fields']['usuari'];
-						var dataHora = new Date(d);
-						//alert(dataHora);
-
-						var dh = dataHora.getDate() + ' de ' + mesos[dataHora.getMonth()] + ' de ' + dataHora.getFullYear() + ' a les ' + dataHora.getHours() + ":" + dataHora.getMinutes();
-
-						if (login == 1) {
-							$('#publicacions').append('<div class="col-md-12">' + '<div class="panel panel-primary">' + '<div class="panel-heading">' + dh + '</div>' + '<div class="panel-body">' + text + '</div>' + '<div class="panel-footer" id="pub' + id + '">' + '<button class="btn btn-info" onclick="Comentar(' + id + ')" data-target="#coment" data-toggle="modal">' + '<span class="glyphicon glyphicon-edit"></span> Comenta</button><br/><br/>' + '</div>' + '</div>' + '</div>');
-						} else {
-							$('#publicacions').append('<div class="col-md-12">' + '<div class="panel panel-primary">' + '<div class="panel-heading">' + dh + '</div>' + '<div class="panel-body">' + text + '</div>' + '<div class="panel-footer" id="pub' + id + '">' + '</div>' + '</div>');
-						}
-
-						$.each(com, function() {
-
-							var comentari = this['fields']['comentari'];
-							var pub = this['fields']['publicacio'];
-							var user = this['fields']['usuari'];
-							var hora = this['fields']['dataHora'];
-							var dataHora = new Date(hora);
-							var dh = dataHora.getDate() + ' de ' + mesos[dataHora.getMonth()] + ' de ' + dataHora.getFullYear() + ' a les ' + dataHora.getHours() + ":" + dataHora.getMinutes();
-
-							if (pub == id) {
-								$.each(perf, function() {
-
-									var nom = this['fields']['nom'];
-									var cognoms = this['fields']['cognoms'];
-									var perfil = this['pk'];
-
-									if (perfil == user) {
-										$('#pub' + pub).append('<div class="panel panel-success">' + '<div class="panel-heading"><a href="/perfil/' + user + '"> ' + nom + ' ' + cognoms + '</a> - ' + dh + '</div>' + '<div class="panel-body">' + '<p aling="justify">' + comentari + '</p>' + '</div>' + '</div>');
-									}
-								});
-								//per
-							}// fi if pub == id
-						});
-						//com
-					});
-					// pub
-					document.getElementById('idMax').value = eval(idMax) + 5;
-
-					//fi function
-				}, //fi succes
-				error : function(xhr, errmsg, err) {
-					$('#publicacions').append('<p>Error del servidor</p>');
-				}
-			});
-			//fi ajax publicacions
-
-			return false;
-		}
-
-	});
-	//fi scroll
 
 });
 // fi ready
