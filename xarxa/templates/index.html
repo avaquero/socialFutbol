@@ -48,9 +48,12 @@
 						</p>
 						{% endif %}
 						<p align="justify">{{ publi.text }}</p>
-						<a href="https://twitter.com/share" class="twitter-share-button" data-related="avaquero30" data-url="http://www.socialfootball.cat/perfil/publicacio/{{ publicacio.id }}" data-lang="ca" data-size="large">Tuiteja</a>
+						<p>
+								<a href="{{ publicacio.url }}">{{ publi.url }}</a>
+							</p>
+						<a href="https://twitter.com/share" class="twitter-share-button" data-related="avaquero30" data-url="http://www.socialfootball.cat/perfil/publicacio/{{ publi.id }}" data-lang="ca" data-size="large">Tuiteja</a>
 				<br/>
-				<div class="fb-like" data-href="http://www.socialfootball.cat/perfil/publicacio/{{ publicacio.id }}" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div>
+				<div class="fb-like" data-href="http://www.socialfootball.cat/perfil/publicacio/{{ publi.id }}" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div>
 					</div>
 					<div class="panel-footer">
 						<button class="btn btn-info" data-toggle="modal" data-target="#coment" onclick="Comentar({{publi.id}})">

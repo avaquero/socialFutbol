@@ -71,44 +71,30 @@ def generarPerfil(request):
             publicacions = paginator.page(1)
         
         
-        peticions = Solicitud.objects.filter(usuariDestinatari = perfil, acceptat = 0)
-        nom = []
-        idPeticio = []
-        amigos = []
-        ids = []
-        fotos = []
-        #variable per poder fer link al perfil que et fa la peticio
-        link = ""
+        peticion = Solicitud.objects.filter(
+                                         Q(usuariSolicitant_id = perfil) | Q(usuariDestinatari_id = perfil),
+                                         Q(acceptat=False)
+                                         )
         
-        for peticio in peticions:
-            user_act = Perfil.objects.get(usuari = peticio.usuariSolicitant_id)
-            #emmagatzemar en una llista / array
-            nom.append(user_act.nom + " " + user_act.cognoms)
-            link = user_act.id
-            idPeticio.append(peticio.id)
-            idPeticio.reverse() #Ordenar la llista al reves per despres fer el pop al template i treurels ordenats
+        peticions = Perfil.objects.filter( id__in =  [x.usuariSolicitant_id for x in peticion] + [x.usuariDestinatari_id for x in peticion] ).exclude(id = request.user.perfil.id)
+
+        idPeticio = []
+       
+        for pet in peticion:
+            idPeticio.append(pet.id)
+        idPeticio.reverse() #Ordenar la llista al reves per despres fer el pop al template i treurels ordenats
         
         amics = Solicitud.objects.filter(
                                          Q(usuariSolicitant_id = perfil) | Q(usuariDestinatari_id = perfil),
                                          Q(acceptat=True)
                                          )
-        # Pasar els amics al template
-        for amic in amics:
-            if amic.usuariSolicitant_id == perfil.id:
-                user_act = Perfil.objects.get(usuari = amic.usuariDestinatari_id)
-                amigos.append(user_act.nom + " " + user_act.cognoms)
-                ids.append(user_act.id)
-                fotos.append(user_act.imatgePerfil)
-            else:
-                user_act = Perfil.objects.get(usuari = amic.usuariSolicitant_id)
-                amigos.append(user_act.nom + " " + user_act.cognoms)
-                ids.append(user_act.id)
-                fotos.append(user_act.imatgePerfil)
         
-        ids.reverse()
-        fotos.reverse()   
+        
+        amigos = Perfil.objects.filter( id__in =  [x.usuariSolicitant_id for x in amics] + [x.usuariDestinatari_id for x in amics] ).exclude(id = request.user.perfil.id)
+        
+          
 
-        context = {'perfil':perfil, 'publicacions':publicacions, 'nom':nom, 'idPeticio':idPeticio, 'peticions':peticions, 'amigos':amigos, 'ids':ids, 'form':form, 'com':com, 'link':link, 'fotos':fotos }
+        context = {'perfil':perfil, 'publicacions':publicacions, 'peticions':peticions, 'amigos':amigos, 'form':form, 'com':com, 'idPeticio':idPeticio }
         return render(request, 'tu.html', context)
 
 #GENERAR PERFIL D'aLTRES

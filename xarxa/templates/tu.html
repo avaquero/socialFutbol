@@ -150,10 +150,10 @@
 			<div class="panel-body">
 				<table>
 
-					{% for noms in nom %}
+					{% for peticio in peticions %}
 					{% with pet=idPeticio.pop %}
 					<tr>
-						<td>Peticio de: <a href="{% url 'perfil:perfilAjeno' link %}">{{ noms }}</a></td>
+						<td>Peticio de: <a href="{% url 'perfil:perfilAjeno' peticio.id %}">{{ peticio.nom }}</a></td>
 						<td><a href="{% url 'perfil:acceptarAmic' pet %}" class="btn btn-success">Acceptar</a><a href="{% url 'perfil:eliminar' pet %}" class="btn btn-danger">Denegar</a></td>
 					</tr>
 					{% endwith %}
@@ -171,19 +171,17 @@
 				<table>
 					{% if amigos %}
 					{% for amic in amigos %}
-					{% with foto=fotos.pop %}
-					{% if foto %}
+					{% if amic.imatgePerfil %}
 					<tr>
-						<td><img width="50px" height="50px" src="/media/{{ foto }}" /></td>
-						<td><a href="{% url 'perfil:perfilAjeno' ids.pop %}">{{ amic }}</a></td>
+						<td><img width="50px" height="50px" src="/media/{{ amic.imatgePerfil }}" /></td>
+						<td><a href="{% url 'perfil:perfilAjeno' amic.id %}">{{ amic.nom }} {{ amic.cognoms }}</a></td>
 					</tr>
 					{% else %}
 					<tr>
 						<td><img width="50px" height="50px" src="{% static 'imatges/default.jpg' %}" /></td>
-						<td><a href="{% url 'perfil:perfilAjeno' ids.pop %}">{{ amic }}</a></td>
+						<td><a href="{% url 'perfil:perfilAjeno' amic.id %}">{{ amic.nom }} {{ amic.cognoms }}</a></td>
 					</tr>
 					{% endif %}
-					{% endwith %}
 					{% endfor %}
 				</table>
 				{% else %}
