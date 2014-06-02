@@ -65,14 +65,16 @@ $(document).ready(function() {
 						//alert(dataHora);
 
 						var dh = dataHora.getDate() + ' de ' + mesos[dataHora.getMonth()] + ' de ' + dataHora.getFullYear() + ' a les ' + dataHora.getHours() + ":" + dataHora.getMinutes();
-
+						
+						
+						
 						if (login == 1) {
 							if (imatge) {
 								$('#publicacions').append('<div class="col-md-12">' + 
 								'<div class="panel panel-primary">' + '<div class="panel-heading">' + dh + 
 								'</div>' + '<div class="panel-body"><p><a href="/media/' + imatge + '"><img class="img-responsive" src="/media/' + imatge + '" width="200px" height="200px" alt="Imatge publicacio" /></a></p><p align="justify">' + text + 
 								'</p><a href="https://twitter.com/share" class="twitter-share-button" data-related="avaquero30" data-url="http://www.socialfootball.cat/perfil/publicacio/' + id + '" data-lang="ca" data-size="large">Tuiteja</a>' +
-								'<div class="fb-like" data-href="http://www.socialfootball.cat/perfil/publicacio/{{ publicacio.id }}" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div>' +
+								'<div class="fb-like" data-href="http://www.socialfootball.cat/perfil/publicacio/" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div>' +
 								'</div>' + 
 								'<div class="panel-footer" id="pub' + id + '">' + 
 								'<button class="btn btn-info" onclick="Comentar(' + id + ')" data-target="#coment" data-toggle="modal">' + 

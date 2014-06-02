@@ -4,16 +4,31 @@
 
 {% block content %}
 {% if user.is_authenticated %}
+
 <div class="row">
 	<br/>
-	<div class="col-md-2">
+	<div class="col-md-4">
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				Accedeix al teu perfil
+			</div>
+			<div class="panel-body">
 		<table>
 			<tr>
 				<td> {% if perfil.imatgePerfil %} <img class="img-responsive" alt="Imatge perfil" src="{{ perfil.imatgePerfil.url }}" width="70px" height="70px"/> {% else %} <img class="img-responsive" alt="Imatge perfil" src="{%static 'imatges/default.jpg' %}" width="70px" height="70px"/> {% endif %} </td>
 				<td><a href="{% url 'perfil:tu' %}">{{ perfil.nom }} {{ perfil.cognoms }}</a></td>
 			</tr>
 		</table>
-
+		</div>
+		</div>
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				Facebook
+			</div>
+			<div class="panel-body">
+				<div class="fb-like-box" width="330px" data-href="https://www.facebook.com/futbolsocial30" data-colorscheme="light" data-show-faces="true" data-header="true" data-stream="true" data-show-border="true"></div>
+			</div>
+		</div>
 	</div>
 	<div class="col-md-8">
 		<div class="panel panel-info">
@@ -64,7 +79,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="col-md-2"></div>
+	
 </div>
 
 <div class="modal fade" id="coment" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

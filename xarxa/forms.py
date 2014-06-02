@@ -6,7 +6,7 @@ from xarxa.models import Publicacio, Comentari
 class FormNovaPublicacio(ModelForm):
     class Meta:
         model = Publicacio
-        fields = ['text','imatge','privat']
+        fields = ['text','url','imatge','privat']
 
 class FormNouComentari(ModelForm):
     class Meta:

@@ -1,4 +1,5 @@
 # -*- encoding: utf-8 -*-
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, get_object_or_404
 from django.http.response import HttpResponseRedirect, HttpResponse
 from perfils.models import Perfil, Solicitud
@@ -54,12 +55,23 @@ def generarPerfil(request):
         else:
             form = FormNovaPublicacio()
         
-        camps_bootstrap = ('text', 'privat')
+        camps_bootstrap = ('text','url', 'privat')
         for c in camps_bootstrap:
             form.fields[c].widget.attrs['class'] = 'form-control'
         
         comentaris = Comentari.objects.all()
-        publicacions = Publicacio.objects.filter(usuari = perfil).order_by('-dataHora')[:5]
+        
+        publicacio = Publicacio.objects.filter(usuari = perfil).order_by('-dataHora')
+        paginator = Paginator(publicacio, 10)
+        page = request.GET.get('pagina')
+        try:
+            publicacions = paginator.page(page)
+        except PageNotAnInteger:
+            publicacions = paginator.page(1)
+        except EmptyPage:
+            publicacions = paginator.page(1)
+        
+        
         peticions = Solicitud.objects.filter(usuariDestinatari = perfil, acceptat = 0)
         nom = []
         idPeticio = []
@@ -109,7 +121,7 @@ def veurePerfil(request, idPerfil):
     else:
         perfil = get_object_or_404(Perfil, pk=idPerfil)
         
-        publicacions = Publicacio.objects.filter(usuari = idPerfil).order_by('-dataHora')[:5]
+        publicacio = Publicacio.objects.filter(usuari = idPerfil).order_by('-dataHora')
         comentaris = Comentari.objects.all()
         
         amics = False
@@ -138,13 +150,13 @@ def veurePerfil(request, idPerfil):
         
             #A partir d'aqui si no som amics no mostro les publis privades, i si la solicitud es pendent tampoco mostro les privades
             else:
-                publicacions = Publicacio.objects.filter(usuari = idPerfil).order_by('-dataHora').exclude(privat = True)[:5]
+                publicacio = Publicacio.objects.filter(usuari = idPerfil).order_by('-dataHora').exclude(privat = True)
             
             if pendent == True:
-                publicacions = Publicacio.objects.filter(usuari = idPerfil).order_by('-dataHora').exclude(privat = True)[:5]
+                publicacio = Publicacio.objects.filter(usuari = idPerfil).order_by('-dataHora').exclude(privat = True)
     
         else:
-            publicacions = Publicacio.objects.filter(usuari = idPerfil).order_by('-dataHora').exclude(privat = True)[:5]
+            publicacio = Publicacio.objects.filter(usuari = idPerfil).order_by('-dataHora').exclude(privat = True)
     
             
         #Crear formulari per comentar publicacions
@@ -160,7 +172,15 @@ def veurePerfil(request, idPerfil):
         else:
             form = FormNouComentari()
         
-    
+        paginator = Paginator(publicacio, 10)
+        page = request.GET.get('pagina')
+        try:
+            publicacions = paginator.page(page)
+        except PageNotAnInteger:
+            publicacions = paginator.page(1)
+        except EmptyPage:
+            publicacions = paginator.page(1)
+                
         form.fields['comentari'].widget.attrs['class'] = 'form-control'
         
         context = {'perfil':perfil, 'publicacions':publicacions, 'amics':amics, 'pendent':pendent, 'comentaris':comentaris, 'form':form, 'linea':linea, 'idPerfil':idPerfil }
@@ -222,7 +242,7 @@ def modificaPublicacio(request, idPublicacio):
     else:
         form = FormNovaPublicacio(instance = publicacio)
         
-    camps_bootstrap = ('text', 'privat')
+    camps_bootstrap = ('text','url', 'privat')
     for c in camps_bootstrap:
         form.fields[c].widget.attrs['class'] = 'form-control'
     return render(request, 'modificarPublicacio.html', {'form':form,})

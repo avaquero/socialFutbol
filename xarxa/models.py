@@ -10,6 +10,7 @@ class Publicacio(models.Model):
     dataHora = models.DateTimeField(default=timezone.now)
     imatge = models.FileField(upload_to="imatges", blank=True)
     text = models.TextField()
+    url = models.URLField(blank=True)
     
 class Comentari(models.Model):
     publicacio = models.ForeignKey(Publicacio)
