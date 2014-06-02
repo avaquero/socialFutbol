@@ -2,7 +2,6 @@ function Comentar(id) {
 	document.getElementById('publicacio').value = id;
 }
 
-
 $(document).ready(function() {
 	$('#id_busca').keyup(function() {
 		$('#buscar').empty();

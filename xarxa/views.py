@@ -59,7 +59,6 @@ def generarPerfil(request):
         for c in camps_bootstrap:
             form.fields[c].widget.attrs['class'] = 'form-control'
         
-        comentaris = Comentari.objects.all()
         
         publicacio = Publicacio.objects.filter(usuari = perfil).order_by('-dataHora')
         paginator = Paginator(publicacio, 10)
@@ -109,7 +108,7 @@ def generarPerfil(request):
         ids.reverse()
         fotos.reverse()   
 
-        context = {'perfil':perfil, 'publicacions':publicacions, 'nom':nom, 'idPeticio':idPeticio, 'peticions':peticions, 'amigos':amigos, 'ids':ids, 'form':form, 'comentaris':comentaris, 'com':com, 'link':link, 'fotos':fotos }
+        context = {'perfil':perfil, 'publicacions':publicacions, 'nom':nom, 'idPeticio':idPeticio, 'peticions':peticions, 'amigos':amigos, 'ids':ids, 'form':form, 'com':com, 'link':link, 'fotos':fotos }
         return render(request, 'tu.html', context)
 
 #GENERAR PERFIL D'aLTRES
@@ -122,7 +121,6 @@ def veurePerfil(request, idPerfil):
         perfil = get_object_or_404(Perfil, pk=idPerfil)
         
         publicacio = Publicacio.objects.filter(usuari = idPerfil).order_by('-dataHora')
-        comentaris = Comentari.objects.all()
         
         amics = False
         pendent = False
@@ -183,7 +181,7 @@ def veurePerfil(request, idPerfil):
                 
         form.fields['comentari'].widget.attrs['class'] = 'form-control'
         
-        context = {'perfil':perfil, 'publicacions':publicacions, 'amics':amics, 'pendent':pendent, 'comentaris':comentaris, 'form':form, 'linea':linea, 'idPerfil':idPerfil }
+        context = {'perfil':perfil, 'publicacions':publicacions, 'amics':amics, 'pendent':pendent, 'form':form, 'linea':linea, 'idPerfil':idPerfil }
     
         return render(request, 'perfil.html', context)
 
@@ -357,7 +355,6 @@ def perfilTuAjax(request):
 
 def compartirPub(request, idPub):
     publicacio = get_object_or_404(Publicacio, pk = idPub)
-    comentaris = Comentari.objects.all()
     if request.method == 'GET':
         form = FormNouComentari(request.GET)
         if form.is_valid():      
@@ -372,7 +369,7 @@ def compartirPub(request, idPub):
         
     
     form.fields['comentari'].widget.attrs['class'] = 'form-control'
-    context = {'publicacio':publicacio, 'comentaris':comentaris, 'form':form}
+    context = {'publicacio':publicacio, 'form':form}
     return render(request, 'compartirPubicacio.html', context)
     
     

@@ -32,26 +32,31 @@ def home(request):
                                          Q(acceptat = True)
                                          )
         publicacions = []
-        comentaris = []
         
-        for amic in amics:
-            if amic.usuariSolicitant_id == yo.id:
-                user_act = Perfil.objects.get(usuari = amic.usuariDestinatari_id)
-            else:
-                user_act = Perfil.objects.get(usuari = amic.usuariSolicitant_id)
-                                
-            publicacio = Publicacio.objects.filter(usuari_id = user_act).exists()
-            if publicacio:
-                publicacio = Publicacio.objects.filter(usuari_id = user_act).order_by('-dataHora')[:2]
-                publicacions.append(publicacio)
-                for publi in publicacio:
-                    comentari = Comentari.objects.filter(publicacio_id = publi).exists()
-                    if comentari:
-                        comentari = Comentari.objects.filter(publicacio_id = publi)
-                        comentaris.append(comentari)
+        usu_amics = Perfil.objects.filter( id__in =  [x.usuariSolicitant_id for x in amics] + [x.usuariDestinatari_id for x in amics] )
         
+        for publicacio in Publicacio.objects.filter( usuari__in = usu_amics ).order_by('-dataHora'):
+            publicacions.append( publicacio )
+
+        context = {'publicacions':publicacions, 'perfil':yo, 'com':com}
         
-        context = {'publicacions':publicacions, 'comentaris':comentaris, 'perfil':yo, 'com':com}
+#         for amic in amics:
+#             if amic.usuariSolicitant_id == yo.id:
+#                 user_act = Perfil.objects.get(usuari = amic.usuariDestinatari_id)
+#             else:
+#                 user_act = Perfil.objects.get(usuari = amic.usuariSolicitant_id)
+#                                 
+#             publicacio = Publicacio.objects.filter(usuari_id = user_act).exists()
+#             if publicacio:
+#                 publicacio = Publicacio.objects.filter(usuari_id = user_act).order_by('-dataHora')[:10]
+#                 publicacions.append(publicacio)
+#                 for publi in publicacio:
+#                     comentari = Comentari.objects.filter(publicacio_id = publi).exists()
+#                     if comentari:
+#                         comentari = Comentari.objects.filter(publicacio_id = publi)
+#                         comentaris.append(comentari)
+#         
+#         context = {'publicacions':publicacions, 'comentaris':comentaris, 'perfil':yo, 'com':com}
         return render(request, 'index.html', context)
     else:
         return render(request, 'index.html')

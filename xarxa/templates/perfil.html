@@ -97,8 +97,7 @@
 							<br/>
 							<br/>
 							{% endif %}
-							{% for comentari in comentaris %}
-							{% if publicacio == comentari.publicacio %}
+							{% for comentari in publicacio.comentari_set.all %}
 							<div class="panel panel-success">
 								<div class="panel-heading">
 									<a href="{% url 'perfil:perfilAjeno' comentari.usuari.id %}">{{ comentari.usuari.nom }} {{ comentari.usuari.cognoms }}</a> - {{ comentari.dataHora }}
@@ -109,7 +108,6 @@
 									</p>
 								</div>
 							</div>
-							{% endif %}
 							{% endfor %}
 						</div>
 					</div>

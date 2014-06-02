@@ -36,8 +36,7 @@
 				Publicacions globals dels teus amics
 			</div>
 			<div class="panel-body">
-				{% for publicacio in publicacions %}
-				{% for publi in publicacio %}
+				{% for publi in publicacions %}
 				<div class="panel panel-primary">
 					<div class="panel-heading">
 						<a style="color: white;" href="{% url 'perfil:perfilAjeno' publi.usuari.id %}">{{ publi.usuari.nom }} {{ publi.usuari.cognoms }}</a> - {{ publi.dataHora }}
@@ -48,7 +47,10 @@
 							<a href="{{ publi.imatge.url }}"><img class="img-responsive" alt="Imatge publicacio" src="{{ publi.imatge.url }}" width="200px" height="200px"/></a>
 						</p>
 						{% endif %}
-						{{ publi.text }}
+						<p align="justify">{{ publi.text }}</p>
+						<a href="https://twitter.com/share" class="twitter-share-button" data-related="avaquero30" data-url="http://www.socialfootball.cat/perfil/publicacio/{{ publicacio.id }}" data-lang="ca" data-size="large">Tuiteja</a>
+				<br/>
+				<div class="fb-like" data-href="http://www.socialfootball.cat/perfil/publicacio/{{ publicacio.id }}" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div>
 					</div>
 					<div class="panel-footer">
 						<button class="btn btn-info" data-toggle="modal" data-target="#coment" onclick="Comentar({{publi.id}})">
@@ -56,9 +58,7 @@
 						</button>
 						<br/>
 						<br/>
-						{% for comentari in comentaris %}
-						{% for com in comentari %}
-						{% if com.publicacio_id == publi.id %}
+						{% for com in publi.comentari_set.all %}
 						<div class="panel panel-success">
 							<div class="panel-heading">
 								<a href="{% url 'perfil:perfilAjeno' com.usuari.id %}">{{ com.usuari.nom }} {{ com.usuari.cognoms }}</a> - {{ com.dataHora }}
@@ -69,12 +69,9 @@
 								</p>
 							</div>
 						</div>
-						{% endif %}
-						{% endfor %}
 						{% endfor %}
 					</div>
 				</div>
-				{% endfor %}
 				{% endfor %}
 			</div>
 		</div>
