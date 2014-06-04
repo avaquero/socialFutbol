@@ -13,13 +13,13 @@
 				Accedeix al teu perfil
 			</div>
 			<div class="panel-body">
-		<table>
-			<tr>
-				<td> {% if perfil.imatgePerfil %} <img class="img-responsive" alt="Imatge perfil" src="{{ perfil.imatgePerfil.url }}" width="70px" height="70px"/> {% else %} <img class="img-responsive" alt="Imatge perfil" src="{%static 'imatges/default.jpg' %}" width="70px" height="70px"/> {% endif %} </td>
-				<td><a href="{% url 'perfil:tu' %}">{{ perfil.nom }} {{ perfil.cognoms }}</a></td>
-			</tr>
-		</table>
-		</div>
+				<table>
+					<tr>
+						<td> {% if perfil.imatgePerfil %} <img class="img-responsive" alt="Imatge perfil" src="{{ perfil.imatgePerfil.url }}" width="70px" height="70px"/> {% else %} <img class="img-responsive" alt="Imatge perfil" src="{%static 'imatges/default.jpg' %}" width="70px" height="70px"/> {% endif %} </td>
+						<td><a href="{% url 'perfil:tu' %}">{{ perfil.nom }} {{ perfil.cognoms }}</a></td>
+					</tr>
+				</table>
+			</div>
 		</div>
 		<div class="panel panel-info">
 			<div class="panel-heading">
@@ -35,7 +35,7 @@
 			<div class="panel-heading">
 				Publicacions globals dels teus amics
 			</div>
-			<div class="panel-body">
+			<div class="panel-body" id="publicacions">
 				{% for publi in publicacions %}
 				<div class="panel panel-primary">
 					<div class="panel-heading">
@@ -47,13 +47,15 @@
 							<a href="{{ publi.imatge.url }}"><img class="img-responsive" alt="Imatge publicacio" src="{{ publi.imatge.url }}" width="200px" height="200px"/></a>
 						</p>
 						{% endif %}
-						<p align="justify">{{ publi.text }}</p>
+						<p align="justify">
+							{{ publi.text }}
+						</p>
 						<p>
-								<a href="{{ publicacio.url }}">{{ publi.url }}</a>
-							</p>
+							<a href="{{ publicacio.url }}">{{ publi.url }}</a>
+						</p>
 						<a href="https://twitter.com/share" class="twitter-share-button" data-related="avaquero30" data-url="http://www.socialfootball.cat/perfil/publicacio/{{ publi.id }}" data-lang="ca" data-size="large">Tuiteja</a>
-				<br/>
-				<div class="fb-like" data-href="http://www.socialfootball.cat/perfil/publicacio/{{ publi.id }}" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div>
+						<br/>
+						<div class="fb-like" data-href="http://www.socialfootball.cat/perfil/publicacio/{{ publi.id }}" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div>
 					</div>
 					<div class="panel-footer">
 						<button class="btn btn-info" data-toggle="modal" data-target="#coment" onclick="Comentar({{publi.id}})">
@@ -76,10 +78,43 @@
 					</div>
 				</div>
 				{% endfor %}
+				<ul class="pagination">
+					{% if publicacions.has_previous %}
+					<li>
+						<a href="?pagina={{ publicacions.previous_page_number }}">&laquo;</a>
+					</li>
+					{% else %}
+					<li class="disabled">
+						<a>&laquo;</a>
+					</li>
+					{% endif %}
+
+					{% for i in publicacions.paginator.page_range %}
+					{% ifequal i publicacions.number %}
+					<li class="active">
+						<a href="?pagina={{ i }}">{{ i }}</a>
+					</li>
+					{% else %}
+					<li>
+						<a href="?pagina={{ i }}">{{ i }}</a>
+					</li>
+					{% endifequal %}
+					{% endfor %}
+
+					{% if publicacions.has_next %}
+					<li>
+						<a href="?pagina={{ publicacions.next_page_number }}">&raquo;</a>
+					</li>
+					{% else %}
+					<li class="disabled">
+						<a>&raquo;</a>
+					</li>
+					{% endif %}
+				</ul>
 			</div>
 		</div>
 	</div>
-	
+
 </div>
 
 <div class="modal fade" id="coment" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -119,7 +154,8 @@
 		Comença ara mateix a utilitzar l'aplicació, registrat
 	</p>
 	<a href="{% url 'accedir:registrarse' %}" class="btn btn-primary">Registrar-se</a>
-	<br/><br/>
+	<br/>
+	<br/>
 	<div class="fb-follow" data-href="https://www.facebook.com/futbolsocial30" data-colorscheme="light" data-layout="standard" data-show-faces="true"></div>
 </div>
 {% endif %}

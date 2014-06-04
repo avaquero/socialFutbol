@@ -6,5 +6,6 @@ urlpatterns = patterns('',
     url(r'^logout$', views.sortir, name='logout'),
     url(r'^registrarse', views.registrarse, name='registrarse'),
     url(r'^dadesPerfil', views.modificarDadesPerfil, name='modificarDades'),
-    url(r'^canviPass', views.canviaContrasenya, name='canviPass'),  
+    url(r'^canviPass', views.canviaContrasenya, name='canviPass'),
+    url(r'^backup', views.copiaSeguretat, name='backup'),  
 )

@@ -270,74 +270,74 @@ def perfils(request):
     
     return HttpResponse(perfilsJson, content_type="application/json")
 
-def perfilAltreAjax(request):
-    
-    numPub = request.GET['max']
-    idPerfil = request.GET['idPerfil']
-    perfil = get_object_or_404(Perfil, pk=idPerfil)
-    
-    
-    publicacions = Publicacio.objects.filter(usuari = perfil).order_by('-dataHora')[:numPub]
-    
-    amics = False
-    pendent = False
-    
-    #Comprovo que l'usuari si esta autenticat si es aixi, miro si soc amic del perfil que visito
-    if request.user.is_authenticated():
-        yo = request.user.perfil
-        amics = Solicitud.objects.filter(
-                                         Q(usuariSolicitant_id = idPerfil) | Q(usuariDestinatari_id = idPerfil),
-                                         Q(usuariSolicitant_id = yo.id) | Q(usuariDestinatari_id = yo.id)
-                                         ).exists()
-        #si existeix un registre miro si som amics, o esta pendent la solicitud
-        if amics:
-            mirarPendent = Solicitud.objects.filter(
-                                         Q(usuariSolicitant_id = idPerfil) | Q(usuariDestinatari_id = idPerfil),
-                                         Q(usuariSolicitant_id = yo.id) | Q(usuariDestinatari_id = yo.id)
-                                         )
-            for x in mirarPendent:
-                if x.acceptat:
-                    pendent = False
-                else:
-                    pendent= True
-    
-        #A partir d'aqui si no som amics no mostro les publis privades, i si la solicitud es pendent tampoco mostro les privades
-        else:
-            publicacions = Publicacio.objects.filter(usuari = idPerfil).order_by('-dataHora').exclude(privat = True)[:numPub]
-        
-        if pendent == True:
-            publicacions = Publicacio.objects.filter(usuari = idPerfil).order_by('-dataHora').exclude(privat = True)[:numPub]
-    else:
-        publicacions = Publicacio.objects.filter(usuari = idPerfil).order_by('-dataHora').exclude(privat = True)[:numPub]
-    
-       
-    
-    publicacionsJson = serializers.serialize('json', publicacions )
-  
-    return HttpResponse(publicacionsJson, content_type="application/json")
+# def perfilAltreAjax(request):
+#     
+#     numPub = request.GET['max']
+#     idPerfil = request.GET['idPerfil']
+#     perfil = get_object_or_404(Perfil, pk=idPerfil)
+#     
+#     
+#     publicacions = Publicacio.objects.filter(usuari = perfil).order_by('-dataHora')[:numPub]
+#     
+#     amics = False
+#     pendent = False
+#     
+#     #Comprovo que l'usuari si esta autenticat si es aixi, miro si soc amic del perfil que visito
+#     if request.user.is_authenticated():
+#         yo = request.user.perfil
+#         amics = Solicitud.objects.filter(
+#                                          Q(usuariSolicitant_id = idPerfil) | Q(usuariDestinatari_id = idPerfil),
+#                                          Q(usuariSolicitant_id = yo.id) | Q(usuariDestinatari_id = yo.id)
+#                                          ).exists()
+#         #si existeix un registre miro si som amics, o esta pendent la solicitud
+#         if amics:
+#             mirarPendent = Solicitud.objects.filter(
+#                                          Q(usuariSolicitant_id = idPerfil) | Q(usuariDestinatari_id = idPerfil),
+#                                          Q(usuariSolicitant_id = yo.id) | Q(usuariDestinatari_id = yo.id)
+#                                          )
+#             for x in mirarPendent:
+#                 if x.acceptat:
+#                     pendent = False
+#                 else:
+#                     pendent= True
+#     
+#         #A partir d'aqui si no som amics no mostro les publis privades, i si la solicitud es pendent tampoco mostro les privades
+#         else:
+#             publicacions = Publicacio.objects.filter(usuari = idPerfil).order_by('-dataHora').exclude(privat = True)[:numPub]
+#         
+#         if pendent == True:
+#             publicacions = Publicacio.objects.filter(usuari = idPerfil).order_by('-dataHora').exclude(privat = True)[:numPub]
+#     else:
+#         publicacions = Publicacio.objects.filter(usuari = idPerfil).order_by('-dataHora').exclude(privat = True)[:numPub]
+#     
+#        
+#     
+#     publicacionsJson = serializers.serialize('json', publicacions )
+#   
+#     return HttpResponse(publicacionsJson, content_type="application/json")
 
-def comentarisAjax(request):
-    comentaris = Comentari.objects.all()
-    comentarisJson = serializers.serialize('json', comentaris )
-  
-    return HttpResponse(comentarisJson, content_type="application/json")
-
-def perfilAjax(request):
-    perfils = Perfil.objects.all()
-    perfilsJson = serializers.serialize('json', perfils )
-  
-    return HttpResponse(perfilsJson, content_type="application/json")
-
-@login_required
-def perfilTuAjax(request):
-    numPub = request.GET['max']
-    perfil = request.user.perfil
-    
-    publicacions = Publicacio.objects.filter(usuari = perfil).order_by('-dataHora')[:numPub]
-    
-    publicacionsJson = serializers.serialize('json', publicacions )
-  
-    return HttpResponse(publicacionsJson, content_type="application/json")
+# def comentarisAjax(request):
+#     comentaris = Comentari.objects.all()
+#     comentarisJson = serializers.serialize('json', comentaris )
+#   
+#     return HttpResponse(comentarisJson, content_type="application/json")
+# 
+# def perfilAjax(request):
+#     perfils = Perfil.objects.all()
+#     perfilsJson = serializers.serialize('json', perfils )
+#   
+#     return HttpResponse(perfilsJson, content_type="application/json")
+# 
+# @login_required
+# def perfilTuAjax(request):
+#     numPub = request.GET['max']
+#     perfil = request.user.perfil
+#     
+#     publicacions = Publicacio.objects.filter(usuari = perfil).order_by('-dataHora')[:numPub]
+#     
+#     publicacionsJson = serializers.serialize('json', publicacions )
+#   
+#     return HttpResponse(publicacionsJson, content_type="application/json")
 
 def compartirPub(request, idPub):
     publicacio = get_object_or_404(Publicacio, pk = idPub)

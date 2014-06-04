@@ -4,8 +4,11 @@ from perfils.models import Perfil, Solicitud
 from xarxa.models import Publicacio, Comentari
 from django.db.models import Q
 from xarxa.forms import FormNouComentari
-from django.http.response import HttpResponseRedirect
+from django.http.response import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
+from django.contrib.auth.decorators import login_required
+from django.core import serializers
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 def home(request):
     if request.user.is_authenticated():
@@ -37,8 +40,18 @@ def home(request):
         
         for publicacio in Publicacio.objects.filter( usuari__in = usu_amics ).order_by('-dataHora'):
             publicacions.append( publicacio )
-
-        context = {'publicacions':publicacions, 'perfil':yo, 'com':com}
+        
+        
+        paginator = Paginator(publicacions, 10)
+        page = request.GET.get('pagina')
+        try:
+            publi = paginator.page(page)
+        except PageNotAnInteger:
+            publi = paginator.page(1)
+        except EmptyPage:
+            publi = paginator.page(1)
+        
+        context = {'publicacions':publi, 'perfil':yo, 'com':com}
         
 #         for amic in amics:
 #             if amic.usuariSolicitant_id == yo.id:

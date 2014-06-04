@@ -1,13 +1,16 @@
 # -*- encoding: utf-8 -*-
 from django.shortcuts import render, get_object_or_404
-from perfils.models import Perfil
+from perfils.models import Perfil, Solicitud
 from perfils.forms import formulariLogin, formulariModificar, formulariRegistrarse, formulariEditarContrasenya
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.http.response import HttpResponseRedirect
+from django.http.response import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from xarxa.models import Publicacio
+from django.core import serializers
+from django.db.models import Q
 
 #from django.contrib.auth.decorators import login_required
 
@@ -167,3 +170,17 @@ def canviaContrasenya(request):
     form.fields['novaComprova'].widget.attrs['placeholder'] = 'Repeteix la nova contrasenya'
 
     return render(request, 'canviContrasenya.html', { 'form': form })
+
+@login_required
+def copiaSeguretat(request):
+    
+    amics = Solicitud.objects.filter(
+                                    Q(usuariSolicitant_id = request.user.id) | Q(usuariDestinatari_id = request.user.id),
+                                    Q(acceptat = True)
+                                    )
+    
+    copia = list(Perfil.objects.filter(id=request.user.id)) + list(Publicacio.objects.filter(usuari_id = request.user.id)) + list(amics)
+    
+    data = serializers.serialize('xml', copia)
+    
+    return HttpResponse(data, content_type="application/xml")
