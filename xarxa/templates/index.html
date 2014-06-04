@@ -36,6 +36,7 @@
 				Publicacions globals dels teus amics
 			</div>
 			<div class="panel-body" id="publicacions">
+				{% if publicacions %}
 				{% for publi in publicacions %}
 				<div class="panel panel-primary">
 					<div class="panel-heading">
@@ -111,6 +112,9 @@
 					</li>
 					{% endif %}
 				</ul>
+				{% else %}
+					Encara els teus amics no han publicat res
+				{% endif %}
 			</div>
 		</div>
 	</div>

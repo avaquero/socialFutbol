@@ -134,11 +134,7 @@
 				{% else %}
 				Encara no has publicat res
 				{% endif %}
-
-				
-
 			</div>
-
 		</div>
 	</div>
 	<div class="col-md-3">
@@ -153,7 +149,7 @@
 					{% for peticio in peticions %}
 					{% with pet=idPeticio.pop %}
 					<tr>
-						<td>Peticio de: <a href="{% url 'perfil:perfilAjeno' peticio.id %}">{{ peticio.nom }}</a></td>
+						<td>Peticio de: <a href="{% url 'perfil:perfilAjeno' peticio.id %}">{{ peticio.nom }} {{ peticio.cognoms }}</a></td>
 						<td><a href="{% url 'perfil:acceptarAmic' pet %}" class="btn btn-success">Acceptar</a><a href="{% url 'perfil:eliminar' pet %}" class="btn btn-danger">Denegar</a></td>
 					</tr>
 					{% endwith %}
@@ -173,12 +169,12 @@
 					{% for amic in amigos %}
 					{% if amic.imatgePerfil %}
 					<tr>
-						<td><img width="50px" height="50px" src="/media/{{ amic.imatgePerfil }}" /></td>
+						<td><img width="50px" height="50px" src="/media/{{ amic.imatgePerfil }}" alt="Imatge perfil" /></td>
 						<td><a href="{% url 'perfil:perfilAjeno' amic.id %}">{{ amic.nom }} {{ amic.cognoms }}</a></td>
 					</tr>
 					{% else %}
 					<tr>
-						<td><img width="50px" height="50px" src="{% static 'imatges/default.jpg' %}" /></td>
+						<td><img width="50px" height="50px" src="{% static 'imatges/default.jpg' %}" alt="Imatge perfil" /></td>
 						<td><a href="{% url 'perfil:perfilAjeno' amic.id %}">{{ amic.nom }} {{ amic.cognoms }}</a></td>
 					</tr>
 					{% endif %}
